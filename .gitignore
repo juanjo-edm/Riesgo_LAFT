@@ -1,0 +1,53 @@
+# Entornos virtuales de Python
+.venv
+.venv/
+.venv*
+venv/
+ENV/
+
+# Archivos de caché y compilación Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+
+# Archivos de sistema operativo y editores
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.Rhistory
+.Rproj.user/
+.Rdata
+.vscode/
+.idea/
+
+# Artefactos y caché de Quarto
+.quarto/
+*/.quarto/
+
+# Archivos de gran tamaño que exceden el límite de GitHub (100 MB)
+Data/PERSONAS_DEMOGRAFICO_Cuadros_CNPV_2018.xlsx
+
+# Artefactos internos o generados que no hacen parte del atlas público
+Cuaderno_Metodologia_JN.Rmd
+Cuaderno_Metodologia_JN.nb.html
+README.html
+*.nb.html
+
+# Cuadernos históricos con narrativa interna
+Documentacion/Cuadernos/
+
+# Libro fuente interno; el público es Output/atlas_territorial_publico.xlsx
+Output/tabla_puntaje_global.xlsx
+App/data/raw/tabla_puntaje_global.xlsx
+
+# Metadatos locales de despliegue
+App/rsconnect/
+App/.posit/publish/
+
+# Archivos temporales de visualización
+www/*.html

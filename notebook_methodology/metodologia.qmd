@@ -1,0 +1,562 @@
+---
+title: "Atlas Territorial de Problemáticas en Colombia y Medición de Riesgo LAFT"
+subtitle: "Metodología de Integración de Fuentes Públicas, Estandarización y Ponderación Objetiva CRITIC"
+author: "Juan José Echeverry"
+date: today
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    number-sections: true
+    code-fold: show
+    code-tools: true
+    math: katex
+    embed-resources: true
+    smooth-scroll: true
+jupyter: atlas-territorial
+---
+
+# Introducción y Enfoque Metodológico
+
+El presente documento consolida la metodología de manipulación, análisis espacial, modelado estadístico y construcción del **Atlas Territorial de Problemáticas en Colombia**. Su propósito es ofrecer una medición rigurosa, reproducible y objetiva de la intensidad del riesgo asociado al **Lavado de Activos y la Financiación del Terrorismo (LA/FT)** a nivel municipal y departamental.
+
+::: {.callout-note}
+### Nota de Interpretación y Alcance
+El índice compuesto resultante se interpreta como una **medida de intensidad relativa y concentración territorial**. No constituye una imputación de causalidad ni un juicio ético o institucional sobre las autoridades de un municipio; sintetiza de forma estructurada las señales empíricas observadas en fuentes públicas oficiales para facilitar la toma de decisiones informada basada en riesgos (*Risk-Based Approach* - RBA).
+:::
+
+El diseño metodológico se fundamenta en las mejores prácticas internacionales:
+
+1. **Manual para la Construcción de Indicadores Compuestos (OECD / JRC):** Garantiza transparencia en la selección de variables, imputación, normalización, esquema de ponderación y análisis de robustez.
+2. **Lineamientos del GAFI / FATF y GAFILAT:** Enfoque basado en riesgos para la identificación de amenazas y vulnerabilidades geográficas.
+3. **Principios del Basel AML Index:** Combinación de pesos objetivos derivados de los datos con validación frente a criterios técnicos.
+
+---
+
+# Fundamentación Jurídica y Delitos Fuente LA/FT
+
+Con base en el **artículo 323 del Código Penal Colombiano** (modificado por las Leyes 599 de 2000, 1121 de 2007, 1474 de 2011, 1762 de 2015 y 2197 de 2022) y las directrices SARLAFT/SAGRILAFT de la Superintendencia Financiera de Colombia (SFC) y la Superintendencia de Sociedades, se estructuran los siguientes delitos fuente principales:
+
+| Tipo | Categoría | Delito Fuente | Referencia Penal / Nota SARLAFT |
+|:---|:---|:---|:---|
+| **LA** | Drogas | Tráfico de estupefacientes y delitos conexos | CP art. 376 y ss. / Delito fuente clásico |
+| **LA** | Criminalidad organizada | Trata de personas | CP art. 188A |
+| **LA** | Criminalidad organizada | Tráfico de migrantes | CP art. 188 |
+| **LA** | Criminalidad organizada | Secuestro extorsivo | CP art. 169 |
+| **LA** | Criminalidad organizada | Extorsión | CP art. 244 |
+| **LA** | Comercio exterior | Contrabando / Defraudación aduanera | CP art. 319 / Estatuto Aduanero |
+| **LA** | Corrupción | Peculado por apropiación | CP art. 397 |
+| **LA** | Corrupción | Cohecho propio e impropio | CP arts. 405–407 |
+| **LA** | Corrupción | Concusión | CP art. 404 |
+| **LA** | Corrupción | Celebración indebida de contratos | CP art. 410 |
+| **LA** | Económicos | Enriquecimiento ilícito de particulares | CP arts. 327–328 |
+| **LA** | Armas | Tráfico y porte de armas y municiones | CP art. 366 |
+| **LA** | Ambiental | Minería ilegal y explotación ilícita de minerales | CP art. 338 |
+| **LA** | Ambiental | Delitos contra los recursos naturales | CP art. 328 |
+| **FT** | Terrorismo | Financiación del terrorismo | CP art. 345 |
+| **FT** | Terrorismo | Administración de recursos para terrorismo | CP art. 345 (puede originarse en fondos lícitos) |
+| **FT** | GAO / GAOr | Apoyo financiero a grupos armados organizados | Enfoque centrado en la destinación |
+
+---
+
+# Taxonomía de las 13 Dimensiones Territoriales
+
+Para superar las limitaciones de análisis genéricos, el atlas organiza los fenómenos delictivos y las economías ilícitas en **13 dimensiones territoriales específicas**:
+
+1. **`CONT` - Contrabando y economías ilícitas:** Casos de contrabando, piratería terrestre y procesos penales activos por lavado de activos.
+2. **`CORR` - Corrupción pública:** Procesos ante la Fiscalía General de la Nación por delitos contra la administración pública.
+3. **`AMBI` - Delitos ambientales:** Infracciones y daños contra el medio ambiente y los recursos naturales.
+4. **`EXTC` - Extorsión y secuestro:** Hechos delictivos de secuestro y extorsión reportados oficialmente.
+5. **`MIEX` - Minería ilegal:** Maquinaria incautada/destruida para extracción ilícita, minas intervenidas y capturas.
+6. **`NARC` - Narcotráfico:** Detección de hectáreas de cultivos de coca, incautaciones de estupefacientes (cocaína, base, marihuana, heroína), insumos químicos, laboratorios destruidos y procesos judiciales.
+7. **`TFT` - Terrorismo y eventos asociados:** Masacres, afectación de infraestructura vial, minas antipersonal (MAP), voladura de oleoductos y atentados terroristas.
+8. **`TRAT` - Trata y migración irregular:** Casos documentados de trata de personas y tráfico ilegal de migrantes.
+9. **`HURTO` - Hurto:** Hurto a personas, residencias, comercio, automotores y entidades financieras.
+10. **`HOMICIDIOS` - Homicidios:** Tasa de homicidios por cada 100.000 habitantes.
+11. **`VIOLENCIA_SEXUAL` - Violencia sexual:** Delitos contra la libertad, integridad y formación sexuales.
+12. **`ARMAS` - Armas:** Incautaciones operativas de armas de fuego y municiones.
+13. **`CAPTURAS` - Capturas:** Operatividad policial y detenciones por orden judicial o flagrancia.
+
+---
+
+# Pipeline Metodológico en Python
+
+A continuación se presenta la ejecución secuencial del pipeline analítico. Cada bloque ejecuta una etapa específica mediante código claro, directo y completamente comentado, respetando la restricción de menos de 50 líneas por chunk.
+
+## Configuración Inicial, Librerías y Parámetros Globales
+
+**Explicación intuitiva:**
+Antes de procesar cualquier dato, se importan las herramientas necesarias (`numpy`, `pandas`, `scipy` y `sklearn`), se desactiva la notación científica para asegurar que los números decimales y conteos sean inmediatamente legibles, y se centralizan todas las rutas de archivos y parámetros del modelo (semillas aleatorias, cuantiles de recorte y configuración de clusters).
+
+```{python}
+import sys
+from pathlib import Path
+import numpy as np
+import pandas as pd
+from scipy import stats
+from sklearn.cluster import KMeans
+
+# -------------------------------------------------------------
+# Configuración de formato numérico y notación científica
+# -------------------------------------------------------------
+# Se suprimen los exponentes científicos (e.g. 1.25e+02 -> 125.0000)
+pd.set_option("display.float_format", lambda x: f"{x:.4f}")
+pd.set_option("display.max_columns", 25)
+pd.set_option("display.width", 1000)
+np.set_printoptions(suppress=True, precision=4)
+
+# -------------------------------------------------------------
+# Definición de rutas relativas de insumos y salidas
+# -------------------------------------------------------------
+# Ubicación del archivo de datos dentro de la carpeta del cuaderno
+ruta_datos_insumo = Path("data") / "atlas_territorial_publico.xlsx"
+if not ruta_datos_insumo.exists():
+    ruta_datos_insumo = Path("notebook_methodology") / "data" / "atlas_territorial_publico.xlsx"
+
+# Carpeta central de salida en la raíz donde la app Shiny lee la data
+ruta_salida_parquet = Path("..") / "data" / "processed"
+if not ruta_salida_parquet.parent.exists():
+    ruta_salida_parquet = Path("data") / "processed"
+ruta_salida_parquet.mkdir(parents=True, exist_ok=True)
+
+# -------------------------------------------------------------
+# Parámetros metodológicos globales
+# -------------------------------------------------------------
+semilla_aleatoria = 123             # Semilla para garantizar reproducibilidad exacta
+cuantiles_winsor = (0.01, 0.99)     # Percentiles 1% y 99% para recorte de outliers
+numero_clusters = 4                 # 4 categorías de intensidad de riesgo
+nombres_niveles = ["Bajo", "Medio", "Alto", "Muy alto"] # Etiquetas ordenadas
+iteraciones_kmeans = 100            # Iteraciones máximas por ajuste de cluster
+inicializaciones_kmeans = 50        # Múltiples inicios aleatorios para convergencia
+
+print("Parámetros y entorno configurados exitosamente.")
+```
+
+## Definición de Dimensiones y Columnas Clave
+
+**Explicación intuitiva:**
+Se declaran los identificadores de las 13 dimensiones temáticas que componen el índice y las columnas de metadatos requeridas para la identificación geográfica de los municipios de Colombia.
+
+```{python}
+# Lista canónica de las 13 dimensiones territoriales
+lista_dimensiones = [
+    "CONT", "CORR", "AMBI", "EXTC", "MIEX", "NARC", "TFT",
+    "TRAT", "HURTO", "HOMICIDIOS", "VIOLENCIA_SEXUAL", "ARMAS", "CAPTURAS"
+]
+
+# Nombres de las columnas que contendrán la intensidad normalizada por dimensión
+columnas_intensidad = [f"{dim}_INTENSIDAD" for dim in lista_dimensiones]
+
+# Nombres de las columnas que contendrán el score ponderado final
+columnas_score = [f"{dim}_SCORE" for dim in lista_dimensiones]
+
+# Columnas de identificación geográfica y demográfica municipal
+columnas_metadatos = [
+    "cod_dpto", "dpto", "cod_mpio", "nom_mpio",
+    "tipo_municipio", "longitud", "latitud", "poblacion_total"
+]
+
+print(f"Total dimensiones configuradas: {len(lista_dimensiones)}")
+print("Lista:", ", ".join(lista_dimensiones))
+```
+
+## Carga y Jerarquización del Catálogo de Indicadores
+
+**Explicación intuitiva:**
+Se lee el catálogo oficial que describe cada indicador, su fuente administrativa original y si se encuentra activo para la agregación del índice compuesto. Se asegura el tipo de dato de cada campo y su ordenamiento lógico.
+
+```{python}
+# Cargar hoja de catálogo desde el archivo de insumos
+df_catalogo = pd.read_excel(ruta_datos_insumo, sheet_name="CATALOGO_INDICADORES")
+
+# Convertir tipos de datos explícitamente para evitar ambigüedades
+df_catalogo["dimension_id"] = df_catalogo["dimension_id"].astype(str)
+df_catalogo["source_id"] = df_catalogo["source_id"].astype(str)
+df_catalogo["included_in_index"] = df_catalogo["included_in_index"].astype(bool)
+df_catalogo["dimension_order"] = df_catalogo["dimension_order"].astype(int)
+df_catalogo["source_order"] = df_catalogo["source_order"].astype(int)
+
+# Ordenar por el número de orden de dimensión y de fuente
+df_catalogo = df_catalogo.sort_values(
+    by=["dimension_order", "source_order"]
+).reset_index(drop=True)
+
+# Vista previa de las primeras fuentes catalogadas
+df_catalogo[["dimension_id", "dimension_label", "source_id", "source_label", "included_in_index"]].head(6)
+```
+
+## Carga y Estandarización de Indicadores Municipales
+
+**Explicación intuitiva:**
+Se leen los registros de cada indicador por municipio. Se formatean los códigos Divipola de departamento (2 dígitos) y municipio (5 dígitos) con ceros a la izquierda y se sanean los valores nulos numéricos.
+
+```{python}
+# Carga de la hoja con las mediciones municipales detalladas
+df_indicadores = pd.read_excel(ruta_datos_insumo, sheet_name="INDICADORES_MUNICIPALES")
+
+# Estandarizar códigos Divipola (departamento a 2 dígitos y municipio a 5 dígitos)
+df_indicadores["cod_dpto"] = df_indicadores["cod_dpto"].astype(str).str.split(".").str[0].str.zfill(2)
+df_indicadores["cod_mpio"] = df_indicadores["cod_mpio"].astype(str).str.split(".").str[0].str.zfill(5)
+
+# Convertir métricas a números de punto flotante reemplazando nulos por ceros
+df_indicadores["total"] = pd.to_numeric(df_indicadores["total"], errors="coerce").fillna(0.0)
+df_indicadores["tasa"] = pd.to_numeric(df_indicadores["tasa"], errors="coerce").fillna(0.0)
+df_indicadores["z_score"] = pd.to_numeric(df_indicadores["z_score"], errors="coerce").fillna(0.0)
+
+print(f"Total registros cargados: {len(df_indicadores):,}")
+print(f"Municipios únicos identificados: {df_indicadores['cod_mpio'].nunique():,}")
+```
+
+## Tratamiento de Outliers (Winsorización) y Escalamiento de Fuentes
+
+**Explicación intuitiva:**
+En indicadores delictivos suelen existir valores extremos atípicos (e.g. grandes incautaciones en puertos) que sesgan la distribución. Mediante winsorización al percentil 1% y 99% se recortan estos picos atípicos sin descartar la observación, y luego se escala cada variable al rango $[0, 100]$.
+
+```{python}
+# Lista para almacenar los resultados procesados por cada indicador fuente
+bloques_fuentes = []
+
+# Procesamiento procedimental agrupando directamente por identificador de fuente
+for fuente_id, grupo in df_indicadores.groupby("source_id", sort=False):
+    grupo_temp = grupo.copy()
+    z_vector = grupo_temp["z_score"].to_numpy(dtype=float)
+    
+    # Calcular percentiles 1% y 99% para el recorte de atípicos
+    limite_inf = np.nanquantile(z_vector, cuantiles_winsor[0])
+    limite_sup = np.nanquantile(z_vector, cuantiles_winsor[1])
+    
+    # Recorte (winsorización) directo mediante np.clip
+    z_recortado = np.clip(z_vector, limite_inf, limite_sup)
+    grupo_temp["z_score_winsor"] = z_recortado
+    
+    # Escalamiento Min-Max al rango 0 a 1 y conversión a escala 0 a 100
+    rango_z = z_recortado.max() - z_recortado.min()
+    norm_01 = (z_recortado - z_recortado.min()) / rango_z if rango_z > 0 else np.zeros_like(z_recortado)
+    grupo_temp["source_score_norm"] = norm_01
+    grupo_temp["source_score"] = norm_01 * 100.0
+    
+    bloques_fuentes.append(grupo_temp)
+
+# Concatenar todos los bloques en el DataFrame final de indicadores
+df_indicadores_proc = pd.concat(bloques_fuentes, ignore_index=True)
+df_indicadores_proc[["source_id", "cod_mpio", "total", "tasa", "z_score_winsor", "source_score"]].head(5)
+```
+
+## Agregación de Fuentes por Dimensión e Intensidad Municipal
+
+**Explicación intuitiva:**
+Las fuentes activas se promedian por municipio y dimensión territorial. La intensidad agregada resultante se winsoriza y normaliza entre 0 y 1 para construir la base de comparación homogénea entre dimensiones.
+
+```{python}
+# Filtrar únicamente las fuentes que hacen parte oficial del índice compuesto
+fuentes_activas = df_indicadores_proc[df_indicadores_proc["included_in_index"]].copy()
+
+# Promedio simple de los z-scores de las fuentes por municipio y dimensión
+df_dims = fuentes_activas.groupby(
+    ["cod_mpio", "dimension_id"], as_index=False
+)["z_score"].mean().rename(columns={"z_score": "dimension_intensidad_raw"})
+
+# Winsorizar y normalizar procedimentalmente cada una de las 13 dimensiones
+bloques_dimensiones = []
+for dim_id, grp_dim in df_dims.groupby("dimension_id", sort=False):
+    dim_copia = grp_dim.copy()
+    valores_raw = dim_copia["dimension_intensidad_raw"].to_numpy(dtype=float)
+    
+    q_bajo = np.nanquantile(valores_raw, cuantiles_winsor[0])
+    q_alto = np.nanquantile(valores_raw, cuantiles_winsor[1])
+    valores_win = np.clip(valores_raw, q_bajo, q_alto)
+    
+    dim_copia["dimension_intensidad"] = valores_win
+    rango_dim = valores_win.max() - valores_win.min()
+    dim_copia["dimension_norm"] = (valores_win - valores_win.min()) / rango_dim if rango_dim > 0 else 0.0
+    bloques_dimensiones.append(dim_copia)
+
+df_dimensiones_proc = pd.concat(bloques_dimensiones, ignore_index=True)
+df_dimensiones_proc.head(6)
+```
+
+## Construcción de la Matriz de Decisión Territorial
+
+**Explicación intuitiva:**
+Se transforman las dimensiones de formato largo a formato ancho (una fila por municipio y una columna por dimensión), conformando la matriz de $1.122 \times 13$ requerida para el cálculo de correlaciones y ponderación objetiva.
+
+```{python}
+# Pivotar intensidades por dimensión (formato ancho con municipios en filas)
+matriz_intensidad = df_dimensiones_proc.pivot(
+    index="cod_mpio", columns="dimension_id", values="dimension_intensidad"
+).fillna(0.0)
+
+# Pivotar dimensiones normalizadas (rango 0 a 1)
+matriz_normalizada = df_dimensiones_proc.pivot(
+    index="cod_mpio", columns="dimension_id", values="dimension_norm"
+).fillna(0.0)
+
+# Reorganizar columnas en el orden oficial establecido
+matriz_intensidad = matriz_intensidad.reindex(columns=lista_dimensiones)
+matriz_normalizada = matriz_normalizada.reindex(columns=lista_dimensiones)
+
+print(f"Dimensiones de la matriz de decisión: {matriz_normalizada.shape} (1122 municipios x 13 dimensiones)")
+matriz_normalizada.head(4)
+```
+
+## Estimación de Pesos Objetivos mediante el Método CRITIC
+
+**Explicación intuitiva:**
+El método CRITIC (*Criteria Importance Through Intercriteria Correlation*) calcula el peso relativo de cada dimensión a partir de dos propiedades de los datos:
+1. **Contraste ($\sigma_j$):** La desviación estándar de cada dimensión normalizada. A mayor dispersión, mayor capacidad de diferenciar municipios.
+2. **Conflicto ($\sum [1 - r_{jk}]$):** La suma de correlaciones inversas con las demás dimensiones. Si una dimensión es muy redundante, se penaliza su peso.
+
+La información total se define como:
+$$C_j = \sigma_j \sum_{k=1}^m (1 - r_{jk}), \quad w_j = \frac{C_j}{\sum_{k=1}^m C_k}$$
+
+```{python}
+# 1. Contraste: desviación estándar muestral de cada dimensión normalizada
+desviaciones_std = matriz_normalizada.std(ddof=1).to_numpy(dtype=float, copy=True)
+
+# 2. Conflicto: cálculo de correlaciones de Pearson entre las 13 dimensiones
+matriz_correlaciones = matriz_normalizada.corr(method="pearson").to_numpy(dtype=float, copy=True)
+np.nan_to_num(matriz_correlaciones, copy=False, nan=0.0)
+np.fill_diagonal(matriz_correlaciones, 1.0) # Diagonal siempre unitaria
+
+# 3. No-redundancia: suma de (1 - r_jk) para cada dimensión
+conflictos = np.sum(1.0 - matriz_correlaciones, axis=1)
+
+# 4. Cantidad de información C_j y normalización a suma 1
+vector_informacion = desviaciones_std * conflictos
+pesos_critic = vector_informacion / np.sum(vector_informacion)
+
+# Diccionario de pesos y tabla explicativa ordenada
+dict_pesos = dict(zip(lista_dimensiones, pesos_critic))
+df_pesos = pd.DataFrame({
+    "dimension_id": lista_dimensiones,
+    "peso": pesos_critic,
+    "peso_pct": pesos_critic * 100.0,
+    "desviacion_std": desviaciones_std,
+    "conflicto_info": conflictos
+}).sort_values(by="peso", ascending=False).reset_index(drop=True)
+
+df_pesos
+```
+
+## Ponderación de Scores y Cálculo del Índice Territorial Compuesto
+
+**Explicación intuitiva:**
+Cada dimensión normalizada se multiplica por su peso objetivo oficial y se escala a 100 puntos. La suma de estos scores conforma el **Índice Territorial Compuesto** ($[0, 100]$), el cual posteriormente se estandariza ($z$-score).
+
+```{python}
+# Calcular scores por dimensión multiplicando por el peso CRITIC y factor 100
+matriz_scores = matriz_normalizada.copy()
+for dim in lista_dimensiones:
+    matriz_scores[dim] = matriz_scores[dim] * dict_pesos[dim] * 100.0
+
+# Renombrar columnas para identificación unívoca
+matriz_scores.columns = [f"{dim}_SCORE" for dim in lista_dimensiones]
+matriz_intensidad.columns = [f"{dim}_INTENSIDAD" for dim in lista_dimensiones]
+
+# Calcular el Índice Territorial Compuesto sumando las 13 dimensiones
+indice_territorial = matriz_scores.sum(axis=1).to_numpy(dtype=float)
+
+# Estandarización z-score del índice municipal
+media_global = np.mean(indice_territorial)
+desv_global = np.std(indice_territorial, ddof=1)
+indice_z = (indice_territorial - media_global) / desv_global
+
+# Ensamble de la tabla de cálculos por municipio
+df_calculo_mun = pd.DataFrame({
+    "cod_mpio": matriz_normalizada.index,
+    "INDICE_TERRITORIAL": indice_territorial,
+    "INDICE_TERRITORIAL_Z": indice_z
+}).merge(matriz_intensidad, on="cod_mpio").merge(matriz_scores, on="cod_mpio")
+
+df_calculo_mun[["cod_mpio", "INDICE_TERRITORIAL", "INDICE_TERRITORIAL_Z"]].head(5)
+```
+
+## Clasificación Jerárquica Municipal mediante K-Means ($k=4$)
+
+**Explicación intuitiva:**
+Para convertir los puntajes continuos en categorías operativas para analistas y oficiales de cumplimiento, se ejecuta el algoritmo K-Means con $k=4$ sobre el $z$-score del índice, asignando las etiquetas: "Bajo", "Medio", "Alto" y "Muy alto" en estricto orden de sus centroides.
+
+```{python}
+# Configuración y ajuste de K-Means sobre el z-score del índice territorial
+modelo_kmeans = KMeans(
+    n_clusters=numero_clusters,
+    n_init=inicializaciones_kmeans,
+    max_iter=iteraciones_kmeans,
+    random_state=semilla_aleatoria
+)
+
+# Ajuste unidimensional del modelo
+vector_z = df_calculo_mun["INDICE_TERRITORIAL_Z"].to_numpy(dtype=float).reshape(-1, 1)
+prediccion_cluster = modelo_kmeans.fit_predict(vector_z)
+
+# Ordenamiento de centroides para garantizar progresión monótona
+centroides_obtenidos = modelo_kmeans.cluster_centers_.flatten()
+orden_centroides = np.argsort(centroides_obtenidos)
+mapa_niveles = {orden_centroides[i]: nombres_niveles[i] for i in range(numero_clusters)}
+mapa_cluster_ids = {orden_centroides[i]: i + 1 for i in range(numero_clusters)}
+
+# Asignar niveles y centroides ordenados
+df_calculo_mun["cluster_total"] = [mapa_cluster_ids[c] for c in prediccion_cluster]
+df_calculo_mun["intensidad_territorial"] = [mapa_niveles[c] for c in prediccion_cluster]
+df_calculo_mun["intensidad"] = df_calculo_mun["cluster_total"].map(
+    dict(zip(range(1, numero_clusters + 1), centroides_obtenidos[orden_centroides]))
+)
+
+# Resumen de distribución municipal resultante
+conteo_distribucion = df_calculo_mun["intensidad_territorial"].value_counts().reindex(nombres_niveles)
+pd.DataFrame({"Nivel": conteo_distribucion.index, "Municipios": conteo_distribucion.values})
+```
+
+## Ensamble Final de Municipios con Metadatos Oficiales
+
+**Explicación intuitiva:**
+Se vinculan los cálculos y clasificaciones con la información demográfica censal oficial del DANE (nombres, departamentos, coordenadas y población total), conformando la base `municipios_total`.
+
+```{python}
+# Cargar metadatos oficiales del DANE desde la hoja de insumo
+df_base_original = pd.read_excel(ruta_datos_insumo, sheet_name="TOTAL_TERRITORIAL")
+df_base_original["cod_dpto"] = df_base_original["cod_dpto"].astype(str).str.split(".").str[0].str.zfill(2)
+df_base_original["cod_mpio"] = df_base_original["cod_mpio"].astype(str).str.split(".").str[0].str.zfill(5)
+
+# Extraer únicamente columnas de metadatos geográficos y demográficos
+df_geometadatos = df_base_original[columnas_metadatos].drop_duplicates(subset=["cod_mpio"]).copy()
+
+# Unión izquierda con los cálculos del modelo
+df_municipios_final = df_geometadatos.merge(df_calculo_mun, on="cod_mpio", how="left")
+df_municipios_final["METODO_INDICE"] = "CRITIC sobre dimensiones territoriales con fuentes winsorizadas 1%-99%"
+
+print(f"Total municipios consolidados: {len(df_municipios_final):,}")
+df_municipios_final[["cod_mpio", "nom_mpio", "dpto", "INDICE_TERRITORIAL", "intensidad_territorial"]].head(5)
+```
+
+## Agregación Departamental Ponderada por Población
+
+**Explicación intuitiva:**
+Para obtener el índice de los 32 departamentos y Bogotá D.C., no se calcula un promedio simple de municipios (lo cual sobrerrepresentaría municipios pequeños despoblados), sino un **promedio ponderado por la población censal** de cada municipio:
+$$\text{Índice}_{\text{depto}} = \frac{\sum_{i \in \text{Depto}} \text{Índice}_i \times \text{Población}_i}{\sum_{i \in \text{Depto}} \text{Población}_i}$$
+
+```{python}
+# Lista para recolectar las estadísticas agregadas departamentales
+registros_departamentos = []
+
+# Iteración por departamento para calcular promedios ponderados y conteos
+for (cod_dpto, nom_dpto), subgrupo in df_municipios_final.groupby(["cod_dpto", "dpto"], sort=True):
+    pob_depto = subgrupo["poblacion_total"].sum()
+    total_mpios = len(subgrupo)
+    
+    # Cálculo del índice departamental ponderado por población
+    if pob_depto > 0:
+        idx_depto_ponderado = (subgrupo["INDICE_TERRITORIAL"] * subgrupo["poblacion_total"]).sum() / pob_depto
+    else:
+        idx_depto_ponderado = subgrupo["INDICE_TERRITORIAL"].mean()
+        
+    conteo_niv = subgrupo["intensidad_territorial"].value_counts()
+    
+    registros_departamentos.append({
+        "cod_dpto": cod_dpto,
+        "dpto": nom_dpto,
+        "poblacion_total_depto": pob_depto,
+        "municipios_total": total_mpios,
+        "municipios_bajo": conteo_niv.get("Bajo", 0),
+        "municipios_medio": conteo_niv.get("Medio", 0),
+        "municipios_alto": conteo_niv.get("Alto", 0),
+        "municipios_muy_alto": conteo_niv.get("Muy alto", 0),
+        "INDICE_TERRITORIAL_DEPTO": idx_depto_ponderado
+    })
+
+df_deptos_final = pd.DataFrame(registros_departamentos)
+df_deptos_final = df_deptos_final.sort_values(by="INDICE_TERRITORIAL_DEPTO", ascending=False).reset_index(drop=True)
+df_deptos_final.head(5)
+```
+
+## Clasificación Jerárquica Departamental con K-Means
+
+**Explicación intuitiva:**
+De manera análoga al nivel municipal, se estandariza el índice departamental y se aplica K-Means ($k=4$) para agrupar los departamentos en los 4 niveles de intensidad.
+
+```{python}
+# Estandarización del índice departamental
+z_departamental = stats.zscore(df_deptos_final["INDICE_TERRITORIAL_DEPTO"].to_numpy(dtype=float))
+df_deptos_final["INDICE_TERRITORIAL_DEPTO_Z"] = z_departamental
+
+# Ajuste de K-Means departamental con parámetros iniciales
+km_deptos = KMeans(n_clusters=numero_clusters, n_init=50, max_iter=100, random_state=semilla_aleatoria)
+clusters_deptos = km_deptos.fit_predict(z_departamental.reshape(-1, 1))
+
+# Mapeo de niveles ordenados por centroide
+centros_dpto = km_deptos.cluster_centers_.flatten()
+orden_dpto = np.argsort(centros_dpto)
+mapa_niv_dpto = {orden_dpto[i]: nombres_niveles[i] for i in range(numero_clusters)}
+mapa_ids_dpto = {orden_dpto[i]: i + 1 for i in range(numero_clusters)}
+
+df_deptos_final["cluster_total_depto"] = [mapa_ids_dpto[c] for c in clusters_deptos]
+df_deptos_final["intensidad_territorial_depto"] = [mapa_niv_dpto[c] for c in clusters_deptos]
+df_deptos_final["METODO_DEPTO"] = "Promedio ponderado por población municipal clasificado por K-Means"
+
+df_deptos_final[["cod_dpto", "dpto", "municipios_total", "INDICE_TERRITORIAL_DEPTO", "intensidad_territorial_depto"]].head(6)
+```
+
+## Exportación Oficial de Archivos Parquet para la Aplicación Shiny
+
+**Explicación intuitiva:**
+Todos los conjuntos de datos generados y validados por el cuaderno se exportan en formato columnar Parquet comprimido hacia el directorio central `data/processed/` del proyecto. Esto garantiza que la aplicación web interactiva consuma exactamente la data producida por la metodología.
+
+```{python}
+# 1. Catálogo de indicadores y fuentes
+df_catalogo.to_parquet(ruta_salida_parquet / "catalogo_indicadores.parquet", index=False)
+
+# 2. Base de datos municipal consolidada con scores y clusters
+df_municipios_final.to_parquet(ruta_salida_parquet / "municipios_total.parquet", index=False)
+
+# 3. Base de datos departamental agregada
+df_deptos_final.to_parquet(ruta_salida_parquet / "departamentos_total.parquet", index=False)
+
+# 4. Detalle de indicadores por municipio
+df_indicadores_proc.to_parquet(ruta_salida_parquet / "indicadores_municipales.parquet", index=False)
+
+# 5. Tabla de ponderadores objetivos CRITIC
+df_pesos.to_parquet(ruta_salida_parquet / "pesos_objetivos.parquet", index=False)
+
+# 6. Matriz larga de dimensiones
+df_dimensiones_proc.to_parquet(ruta_salida_parquet / "dimensiones_municipales.parquet", index=False)
+
+print(f"Exportación exitosa en formato Parquet a: {ruta_salida_parquet.resolve()}")
+```
+
+## Pruebas de Consistencia y Auditoría de Integridad Metodológica
+
+**Explicación intuitiva:**
+Para verificar que el proceso analítico no presentó pérdidas de información, sesgos o inconsistencias matemáticas, se ejecutan pruebas automatizadas que certifican la integridad del modelo.
+
+```{python}
+# Definición de criterios de control de calidad
+pruebas_calidad = {
+    "Total municipios es exactamente 1.122": len(df_municipios_final) == 1122,
+    "Total departamentos es exactamente 33": len(df_deptos_final) == 33,
+    "Suma de pesos CRITIC es 1.0 (±1e-6)": abs(df_pesos["peso"].sum() - 1.0) < 1e-6,
+    "Total de dimensiones es exactamente 13": len(df_pesos) == 13,
+    "Sin valores nulos en el índice territorial": df_municipios_final["INDICE_TERRITORIAL"].isna().sum() == 0,
+    "Todas las puntuaciones son valores finitos": np.isfinite(df_municipios_final["INDICE_TERRITORIAL"]).all(),
+}
+
+# Consolidar reporte de auditoría
+df_auditoria = pd.DataFrame([
+    {"Validación": criterio, "Estado": "PASS" if resultado else "FAIL"}
+    for criterio, resultado in pruebas_calidad.items()
+])
+
+# Comprobar que todas las validaciones hayan aprobado satisfactoriamente
+assert all(pruebas_calidad.values()), "¡Error! Una o más validaciones metodológicas no pasaron."
+df_auditoria
+```
+
+---
+
+# Conclusiones y Trazabilidad
+
+El pipeline metodológico implementado provee:
+1. **Transparencia Total:** Toda transformación desde los datos brutos hasta las clasificaciones de riesgo se documenta y ejecuta de forma lineal y auditable.
+2. **Robustez Matemática:** La normalización Min-Max tras winsorización neutraliza el impacto distorsionante de valores extremos, mientras que la técnica CRITIC elimina la arbitrariedad en la asignación de ponderadores.
+3. **Consumo Directo en la App Shiny:** Las salidas Parquet generadas alimentan inmediatamente el tablero interactivo en la raíz del proyecto (`app.py`), facilitando el análisis visual, geoespacial y comparativo a tomadores de decisiones.

@@ -1,0 +1,20 @@
+project:
+  type: default
+
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    number-sections: true
+    code-fold: show
+    code-tools: true
+    math: katex
+    embed-resources: true
+    smooth-scroll: true
+
+execute:
+  echo: true
+  warning: false
+  message: false
