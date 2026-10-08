@@ -4,13 +4,21 @@ Configuración global, constantes y etiquetas del Atlas Territorial de Riesgo LA
 
 from pathlib import Path
 
-# Directorios de datos
+# Directorios de datos con resolución insensible a mayúsculas para Linux / Posit Connect
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-RAW_DIR = DATA_DIR / "raw"
-PROCESSED_DIR = DATA_DIR / "processed"
-GEODATA_DIR = DATA_DIR / "geodata"
-OUTPUT_DIR = BASE_DIR / "Output"
+
+def _resolve_dir(base: Path, candidates: list[str]) -> Path:
+    for name in candidates:
+        target = base / name
+        if target.is_dir():
+            return target
+    return base / candidates[0]
+
+DATA_DIR = _resolve_dir(BASE_DIR, ["Data", "data"])
+RAW_DIR = _resolve_dir(DATA_DIR, ["raw", "Raw"])
+PROCESSED_DIR = _resolve_dir(DATA_DIR, ["processed", "Processed"])
+GEODATA_DIR = _resolve_dir(DATA_DIR, ["geodata", "Geodata"])
+OUTPUT_DIR = _resolve_dir(BASE_DIR, ["Output", "output"])
 
 # Dimensiones territoriales oficiales
 DIMENSIONES_TERRITORIALES = [

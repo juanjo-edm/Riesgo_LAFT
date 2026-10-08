@@ -6,9 +6,6 @@ Framework: Shiny for Python (shiny).
 from pathlib import Path
 from shiny import App, reactive, ui
 
-WWW_DIR = Path(__file__).resolve().parent / "www"
-WWW_DIR.mkdir(parents=True, exist_ok=True)
-
 from src.calculator import (
     build_department_active,
     build_municipal_active,
@@ -193,7 +190,7 @@ def server(input, output, session):
         municipios_active_reactive=municipios_active,
     )
 
-app = App(app_ui, server, static_assets=WWW_DIR)
+app = App(app_ui, server)
 
 if __name__ == "__main__":
     app.run(port=8000)

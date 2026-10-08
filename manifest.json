@@ -20,13 +20,10 @@
   },
   "files": {
     "requirements.txt": {
-      "checksum": "9f2526d4718211afa2eeb3f587e3d8ab"
+      "checksum": "202e666f59e3350a29e31b51398aaf91"
     },
     ".gitignore": {
       "checksum": "8368e0c91d810fd87bd6f7f1180f3f47"
-    },
-    "Data/INCAUTACIO\u0301N ORO Y MERCURIO (1).xlsx": {
-      "checksum": "a9a0e61f2fd013c35af399597f68c6f5"
     },
     "Data/geodata/mapa_departamentos.geojson": {
       "checksum": "9c203ba981db95d7e6e2e6d3a6ce5b7a"
@@ -58,155 +55,23 @@
     "Data/processed/pesos_objetivos.parquet": {
       "checksum": "a7bc2066ee8b12d48222acaa67230f5e"
     },
-    "Data/raw/atlas_territorial_publico.xlsx": {
-      "checksum": "4287cbd3028b4ebcd1c58e4618633673"
-    },
-    "Documentacion/Cuadernos/Cuaderno Narcotrafico.Rmd": {
-      "checksum": "cee66dda9728cb6db29a29c3e81f3a23"
-    },
-    "Documentacion/Cuadernos/Cuaderno Terrorismo FT.Rmd": {
-      "checksum": "4cd5bd3d7dbe0a0a90b65bb819077677"
-    },
-    "Documentacion/Cuadernos/Cuaderno Trata y Migrantes.Rmd": {
-      "checksum": "5ce4b3a3db23794961dd34bf833270d2"
-    },
-    "Documentacion/Cuadernos/Cuaderno Violencia y Seguridad Ciudadana.Rmd": {
-      "checksum": "a13d9fccb47b0a67cf50b50a30069eaf"
-    },
-    "Documentacion/Fuentes/Descripcion fuentes.xlsx": {
-      "checksum": "9aecb2136e3f4a2dc559ed4fffed7a38"
-    },
-    "Output/atlas_territorial_publico.xlsx": {
-      "checksum": "4287cbd3028b4ebcd1c58e4618633673"
-    },
-    "Output/tabla_puntaje_global.xlsx": {
-      "checksum": "8ab3a0bb782e1281ae010a6c32496adf"
-    },
     "README.md": {
-      "checksum": "c8bdd8aff18b2689957ca16f73aa4ef5"
-    },
-    "Scripts/Contrabando/Calculo de tasas.R": {
-      "checksum": "1d827ed79fa601ee8c7987e09a1e4a40"
-    },
-    "Scripts/Contrabando/Calculo riego.R": {
-      "checksum": "5feb9dc296916fad06b7db5555438a51"
-    },
-    "Scripts/Contrabando/Pirateria terrestre.R": {
-      "checksum": "b3a79bb2677aa2d3b2b2b0d2b176cdaa"
-    },
-    "Scripts/Contrabando/Tabla Fiscalia Contrabando.R": {
-      "checksum": "040f7624a8a548d8b2ed605da651fc07"
-    },
-    "Scripts/Corrupcion/Tabla Fiscalia DCA.R": {
-      "checksum": "2fe412627cb5575b333e266b55d2fee0"
-    },
-    "Scripts/DANE/Lectura tabla DANE.R": {
-      "checksum": "607c820029034f785ebc22c3a456c357"
-    },
-    "Scripts/Delitos Ambientales/Tabla Delitos Ambientales.R": {
-      "checksum": "83053ef1e608b8b56cb7ad2c4cfde541"
-    },
-    "Scripts/Extorsio\u0301n y control territorial/Extorsio\u0301n.R": {
-      "checksum": "2ef899e5ce632530768a8a9248c8bcfb"
-    },
-    "Scripts/Extorsio\u0301n y control territorial/Secuestro.R": {
-      "checksum": "784b399d7110132303566d36fc479efd"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/CAPTURAS POR MINERI\u0301A ILEGAL.R": {
-      "checksum": "c587ceb75ef4df46823ef7408fe05fed"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/IINCAUTACION DE ORO Y MERCURIO.R": {
-      "checksum": "b1b4b9127e345c7847e6caa40fd0a179"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/INCAUTACIONES Y DESTRUCCIONES MAQUINARIA EXPLOTACIO\u0301N ILI\u0301CITA DE MINERALES.R": {
-      "checksum": "7d612c98228aec1a47cd46913de04391"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/MINAS INTERVENIDAS.R": {
-      "checksum": "4d65b3de8f5424a1961f4c3dd9e85a44"
-    },
-    "Scripts/Narcotrafico/Cultivos Ilicitos.R": {
-      "checksum": "a68f96b9e7e1ff8ce22487918a78dcda"
-    },
-    "Scripts/Narcotrafico/Destruccion de infrastructura de produccion de drogas ilicitas.R": {
-      "checksum": "627c0a043f6d90bfb41fcf5f5c105f9b"
-    },
-    "Scripts/Narcotrafico/Incautaciones de base de coca.R": {
-      "checksum": "7cc37a0ae64d8f758e9641d34fd163b5"
-    },
-    "Scripts/Narcotrafico/Incautaciones de basuco.R": {
-      "checksum": "0b1ded78ce0360764500ca066b3eb989"
-    },
-    "Scripts/Narcotrafico/Incautaciones de cocaina.R": {
-      "checksum": "da41553dd0d5044b7921979b0b4e6acb"
-    },
-    "Scripts/Narcotrafico/Incautaciones de insumos liquidos.R": {
-      "checksum": "de8ff3c335699faf5f6924d33b9fee48"
-    },
-    "Scripts/Narcotrafico/Incautaciones de insumos solidos.R": {
-      "checksum": "f3ffa478535c327f365f699c89ab8c33"
-    },
-    "Scripts/Narcotrafico/Incautaciones de marihuana.R": {
-      "checksum": "fab119997fd450e90c1a02358ecab55e"
-    },
-    "Scripts/Narcotrafico/Incautaciones heroina.R": {
-      "checksum": "d2b55b3573e8c89d3217b4bd98bd968c"
-    },
-    "Scripts/territorial_exports.R": {
-      "checksum": "f2c166c096bfa908dae9fa2dcf2c11df"
-    },
-    "Utils/Funciones.R": {
-      "checksum": "82f19b9d62f3e260d891959de51d78b4"
+      "checksum": "c2de8a102f2978f10806097a929e1e27"
     },
     "app.py": {
-      "checksum": "6a0820c36350a65bda93e1936752de09"
+      "checksum": "cccc079b11a4188cf0dab0ca50f0b57e"
     },
     "images/clipboard-1721304052.png": {
       "checksum": "a69c69ec7180c7df5290ccde7e974966"
     },
-    "notebook_methodology/.quarto/_freeze/metodologia/execute-results/html.json": {
-      "checksum": "2fdc0e372a64c6ddb2c8e6befad27cf2"
-    },
-    "notebook_methodology/.quarto/project-cache/52552a1710173595b0c593e872811386": {
-      "checksum": "52552a1710173595b0c593e872811386"
-    },
-    "notebook_methodology/.quarto/project-cache/deno-kv-file": {
-      "checksum": "13a4813bffbeae6981ef5749dbd96124"
-    },
-    "notebook_methodology/.quarto/xref/INDEX": {
-      "checksum": "dd56bdb5b963238ba5cce4fc986ba739"
-    },
-    "notebook_methodology/.quarto/xref/c431faa4": {
-      "checksum": "237a2fa8ad3e3e16a7713f8694f91a00"
-    },
-    "notebook_methodology/README.md": {
-      "checksum": "c8fce5ff1c52fd8b3dd29b44a49ac742"
-    },
-    "notebook_methodology/_quarto.yml": {
-      "checksum": "411b2448b874d2f9051ba214affba943"
-    },
-    "notebook_methodology/data/atlas_territorial_publico.xlsx": {
-      "checksum": "4287cbd3028b4ebcd1c58e4618633673"
-    },
-    "notebook_methodology/data/tabla_puntaje_global.xlsx": {
-      "checksum": "8ab3a0bb782e1281ae010a6c32496adf"
-    },
-    "notebook_methodology/images/clipboard-1721304052.png": {
-      "checksum": "a69c69ec7180c7df5290ccde7e974966"
-    },
-    "notebook_methodology/metodologia.html": {
-      "checksum": "f306614f64463899385f4822708aa874"
-    },
-    "notebook_methodology/metodologia.qmd": {
-      "checksum": "824d8031cb70db9d5a292bf78aaa649e"
-    },
     "pyproject.toml": {
-      "checksum": "9389aa95f8896e94e404c275ae91f15e"
+      "checksum": "38441d98b4f2fbda5c41b753d23a9e1f"
     },
     "run.sh": {
       "checksum": "b863e1e7c44241f9d13a89bee3a2e92d"
     },
     "src/README.md": {
-      "checksum": "bfc07ea3a9bd87d2db57e0c28acfd3fe"
+      "checksum": "15108ba3804f1fa5b557702374daa4a6"
     },
     "src/calculator.py": {
       "checksum": "866005e5d1a05422744ebc39959d3b7d"
@@ -215,16 +80,16 @@
       "checksum": "b1c7319b21d0e44e40eb5d41ba80302f"
     },
     "src/config.py": {
-      "checksum": "cfee2ea71a2039cbaf4d9b55e19e7e07"
+      "checksum": "e5e03bb3206f49f3ed8ee22d5d0acedd"
     },
     "src/critic.py": {
       "checksum": "359eb0e4abad033416c27bc6eae23bd9"
     },
     "src/data_loader.py": {
-      "checksum": "30f019b40055f99bf889b9193bd94fa2"
+      "checksum": "34ea72498bb560bea8819dab0b62a689"
     },
     "src/modules/README.md": {
-      "checksum": "ca9354e0af67ec5f8138a7b745ec2d57"
+      "checksum": "81a8284624043b3e099bce7d0ca14de6"
     },
     "src/modules/department_profile.py": {
       "checksum": "9dae122ad75fcfefea99103d07236843"
@@ -251,7 +116,7 @@
       "checksum": "0e010d131b3eab6747f3a135249837a9"
     },
     "uv.lock": {
-      "checksum": "affaeb0cd009c5a88f0a7f3571f9a686"
+      "checksum": "f3d8d3f042ec76bc7d3f6fa1290f0cba"
     }
   }
 }

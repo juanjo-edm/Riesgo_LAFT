@@ -119,6 +119,7 @@ ipython-pygments-lexers==1.1.1
     # via ipython
 ipywidgets==8.1.9
     # via
+    #   atlas-territorial-laft (pyproject.toml)
     #   anywidget
     #   ipyleaflet
     #   jupyter
