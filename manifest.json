@@ -158,7 +158,7 @@
       "checksum": "82f19b9d62f3e260d891959de51d78b4"
     },
     "app.py": {
-      "checksum": "cccc079b11a4188cf0dab0ca50f0b57e"
+      "checksum": "4ed588a0d11372ac2f4727fbab291700"
     },
     "images/clipboard-1721304052.png": {
       "checksum": "a69c69ec7180c7df5290ccde7e974966"
@@ -185,10 +185,10 @@
       "checksum": "866005e5d1a05422744ebc39959d3b7d"
     },
     "src/components/__pycache__/cards.cpython-311.pyc": {
-      "checksum": "f586139bd625b27012371ef6b5df5ce5"
+      "checksum": "b335b000cf631c73e8d69abb71ed850d"
     },
     "src/components/cards.py": {
-      "checksum": "b1c7319b21d0e44e40eb5d41ba80302f"
+      "checksum": "77fa6f70c3d0608e9807f7b43e08f46a"
     },
     "src/config.py": {
       "checksum": "e5e03bb3206f49f3ed8ee22d5d0acedd"
@@ -203,49 +203,49 @@
       "checksum": "81a8284624043b3e099bce7d0ca14de6"
     },
     "src/modules/__pycache__/department_profile.cpython-311.pyc": {
-      "checksum": "a53cb415c62e785905e405e666a3a081"
+      "checksum": "eb38614f8bf35653f20da371a0b14d69"
     },
     "src/modules/__pycache__/filters.cpython-311.pyc": {
-      "checksum": "c7cb6c8459d237c24d6ec00544690157"
+      "checksum": "665f8792853508ea1517ef67f64cf825"
     },
     "src/modules/__pycache__/map.cpython-311.pyc": {
       "checksum": "d6bfcbd4fb5e8f8a3c5baea59379f99e"
     },
     "src/modules/__pycache__/profile.cpython-311.pyc": {
-      "checksum": "f7628b1f54a8105c40d0ba57b5dfe092"
+      "checksum": "18285249cd7e636ef911e1266309004c"
     },
     "src/modules/__pycache__/rankings.cpython-311.pyc": {
-      "checksum": "f55638e03641d0f9adc82cbc129a9a8c"
+      "checksum": "325bc354073673c71bd8a52c2f3c0b9d"
     },
     "src/modules/department_profile.py": {
-      "checksum": "9dae122ad75fcfefea99103d07236843"
+      "checksum": "f6b434f59fce5651489e11ba37aafe89"
     },
     "src/modules/filters.py": {
-      "checksum": "655909c57b3ce1a94b1ab6880164cee4"
+      "checksum": "8c9cc48bd1d6de65dee2e34a1e0e7260"
     },
     "src/modules/map.py": {
       "checksum": "57528e9708a256f8f728b5fc46761262"
     },
     "src/modules/profile.py": {
-      "checksum": "01595994d37f7d0d949b01b9feefe159"
+      "checksum": "45f9002fb86b4a44112a21d8f8f1b8e0"
     },
     "src/modules/rankings.py": {
-      "checksum": "21470ba3305dd6626a9a138530cff03d"
+      "checksum": "9fad8ea957e89dcbbd79bc8a9aa2e5f1"
     },
     "src/prepare_data.py": {
       "checksum": "5b03fa351c85f94f0ba62e499212ac9d"
     },
     "src/visualizations/__pycache__/map_builder.cpython-311.pyc": {
-      "checksum": "c6e8cc308505b47374ee445be00e3e81"
+      "checksum": "a05be8140b936d93ef1ba3badceda320"
     },
     "src/visualizations/__pycache__/radar.cpython-311.pyc": {
-      "checksum": "c605f467ea3f76c9b4d514a80672cbdc"
+      "checksum": "2b2abc403b8233cd2c25b8442c246e8e"
     },
     "src/visualizations/map_builder.py": {
-      "checksum": "c31373a1412509fd9d2cc51d069407ca"
+      "checksum": "ac6fb5205abf84b3dcdb8dde15fc639f"
     },
     "src/visualizations/radar.py": {
-      "checksum": "0e010d131b3eab6747f3a135249837a9"
+      "checksum": "62d6c81f561f4a95f7d317c9e9fe5899"
     },
     "uv.lock": {
       "checksum": "40403baedfa4396bbd9f07daf84ab1ca"

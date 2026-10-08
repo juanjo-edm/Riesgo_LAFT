@@ -16,51 +16,82 @@ from src.config import (
 @module.ui
 def filters_ui():
     return ui.TagList(
-        ui.input_select(
-            "vista",
-            "Vista territorial",
-            choices=["Municipios", "Departamentos"],
-            selected="Municipios",
-        ),
-        ui.input_select(
-            "departamento",
-            "Departamento",
-            choices=["Todos"],
-            selected="Todos",
-        ),
-        ui.panel_conditional(
-            "input.vista === 'Municipios'",
-            ui.input_select(
-                "municipio",
-                "Municipio para perfil",
-                choices={"":"Seleccione..."},
-                selected="",
+        ui.tags.div(
+            ui.tags.div(
+                ui.tags.span("📍", style="margin-right: 6px; font-size: 1rem;"),
+                ui.tags.span("Ámbito Territorial", style="font-weight: 700; color: #1e1b4b; font-size: 0.9rem; letter-spacing: 0.2px;"),
+                style="margin-bottom: 8px; display: flex; align-items: center;",
             ),
+            ui.input_select(
+                "vista",
+                "Nivel de agregación",
+                choices=["Municipios", "Departamentos"],
+                selected="Municipios",
+            ),
+            ui.input_select(
+                "departamento",
+                "Departamento",
+                choices=["Todos"],
+                selected="Todos",
+            ),
+            ui.panel_conditional(
+                "input.vista === 'Municipios'",
+                ui.input_select(
+                    "municipio",
+                    "Municipio específico",
+                    choices={"": "Seleccione..."},
+                    selected="",
+                ),
+            ),
+            class_="filter-section mb-3",
         ),
-        ui.tags.hr(style="margin: 12px 0; border-color: #cbd5e1;"),
-        ui.input_checkbox_group(
-            "dimensiones",
-            "Dimensiones de análisis",
-            choices={dim: DIMENSION_LABELS.get(dim, dim) for dim in DIMENSIONES_TERRITORIALES},
-            selected=[],
+        ui.tags.hr(style="margin: 14px 0; border-color: #e2e8f0;"),
+        ui.tags.div(
+            ui.tags.div(
+                ui.tags.span("⚖️", style="margin-right: 6px; font-size: 1rem;"),
+                ui.tags.span("Dimensiones de Análisis", style="font-weight: 700; color: #1e1b4b; font-size: 0.9rem; letter-spacing: 0.2px;"),
+                style="margin-bottom: 4px; display: flex; align-items: center;",
+            ),
+            ui.tags.small("Seleccione para recalcular índice con ponderación CRITIC:", style="color: #64748b; font-size: 0.78rem; display: block; margin-bottom: 8px;"),
+            ui.tags.div(
+                ui.input_checkbox_group(
+                    "dimensiones",
+                    None,
+                    choices={dim: DIMENSION_LABELS.get(dim, dim) for dim in DIMENSIONES_TERRITORIALES},
+                    selected=[],
+                ),
+                class_="filter-scrollbox",
+            ),
+            ui.tags.div(
+                ui.input_checkbox_group(
+                    "fuentes",
+                    "Indicadores específicos",
+                    choices={},
+                    selected=[],
+                ),
+                style="margin-top: 8px;",
+            ),
+            class_="filter-section mb-3",
         ),
-        ui.input_checkbox_group(
-            "fuentes",
-            "Fuentes e indicadores específicos",
-            choices={},
-            selected=[],
-        ),
-        ui.tags.hr(style="margin: 12px 0; border-color: #cbd5e1;"),
-        ui.input_checkbox_group(
-            "niveles",
-            "Niveles de intensidad",
-            choices=INTENSIDAD_LEVELS,
-            selected=INTENSIDAD_LEVELS,
+        ui.tags.hr(style="margin: 14px 0; border-color: #e2e8f0;"),
+        ui.tags.div(
+            ui.tags.div(
+                ui.tags.span("🚥", style="margin-right: 6px; font-size: 1rem;"),
+                ui.tags.span("Niveles de Intensidad", style="font-weight: 700; color: #1e1b4b; font-size: 0.9rem; letter-spacing: 0.2px;"),
+                style="margin-bottom: 8px; display: flex; align-items: center;",
+            ),
+            ui.input_checkbox_group(
+                "niveles",
+                None,
+                choices=INTENSIDAD_LEVELS,
+                selected=INTENSIDAD_LEVELS,
+            ),
+            class_="filter-section mb-3",
         ),
         ui.input_action_button(
             "clear_filters",
-            "Borrar todos los filtros",
-            class_="btn-outline-secondary w-100 mt-2",
+            "Restablecer Filtros",
+            class_="btn btn-outline-secondary w-100 mt-2",
         ),
     )
 

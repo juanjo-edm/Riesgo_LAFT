@@ -28,55 +28,134 @@ app_ui = ui.page_sidebar(
     ui.sidebar(
         filters_ui("filters"),
         width=340,
-        title="Filtros y Dimensiones",
+        title=ui.span(
+            ui.span("⚙️", style="margin-right: 6px;"),
+            "Panel de Filtros",
+            style="font-weight: 800; color: #1e1b4b; letter-spacing: -0.2px;",
+        ),
+        bg="#f8fafc",
     ),
     ui.tags.head(
         ui.tags.style(
             """
+            :root {
+                --bs-primary: #1e1b4b;
+                --bs-primary-rgb: 30, 27, 75;
+            }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+                background-color: #f8fafc;
+                color: #0f172a;
+            }
             .atlas-header {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                background: linear-gradient(135deg, #1e1b4b 0%, #28246f 50%, #312e81 100%);
+                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
                 color: #ffffff;
-                padding: 16px 24px;
-                border-bottom: 4px solid #4338ca;
-                box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-                margin: -1.5rem -1.5rem 1.5rem -1.5rem;
-                text-align: center;
+                padding: 22px 28px;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+                margin-bottom: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .atlas-header .header-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(8px);
+                color: #c7d2fe;
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                padding: 4px 12px;
+                border-radius: 9999px;
+                margin-bottom: 10px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
             }
             .atlas-header h2 {
                 margin: 0;
-                font-size: 1.45rem;
+                font-size: 1.6rem;
                 font-weight: 800;
-                letter-spacing: -0.02em;
+                letter-spacing: -0.025em;
+                color: #ffffff;
             }
             .atlas-header p {
-                margin: 4px 0 0 0;
-                font-size: 0.85rem;
-                color: #c7d2fe;
+                margin: 6px 0 0 0;
+                font-size: 0.9rem;
+                color: #cbd5e1;
                 font-weight: 400;
+                line-height: 1.45;
+                max-width: 850px;
+            }
+            .nav-tabs {
+                border-bottom: 1px solid #e2e8f0;
+                gap: 4px;
+            }
+            .nav-tabs .nav-link {
+                color: #64748b;
+                font-size: 0.92rem;
+                font-weight: 600;
+                border: none;
+                border-bottom: 3px solid transparent;
+                padding: 10px 18px;
+                border-radius: 0;
+                transition: color 0.15s ease, border-color 0.15s ease;
+            }
+            .nav-tabs .nav-link:hover {
+                color: #1e1b4b;
+                border-bottom-color: #cbd5e1;
             }
             .nav-tabs .nav-link.active {
                 font-weight: 700;
-                color: #28246f !important;
-                border-bottom: 3px solid #28246f !important;
-            }
-            .nav-tabs .nav-link {
-                color: #475569;
-                font-size: 0.95rem;
+                color: #1e1b4b !important;
+                background: transparent !important;
+                border-bottom: 3px solid #4338ca !important;
             }
             .card {
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02) !important;
+                background-color: #ffffff;
+                transition: box-shadow 0.2s ease;
+            }
+            .card-header {
+                background-color: #ffffff !important;
+                border-bottom: 1px solid #f1f5f9 !important;
+                padding: 14px 18px !important;
+            }
+            .filter-section .form-label {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #475569;
+                margin-bottom: 4px;
+            }
+            .filter-scrollbox {
+                max-height: 190px;
+                overflow-y: auto;
+                padding: 8px 10px;
+                background: #f8fafc;
                 border: 1px solid #e2e8f0;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+                border-radius: 8px;
+            }
+            .filter-scrollbox::-webkit-scrollbar {
+                width: 6px;
+            }
+            .filter-scrollbox::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 4px;
+            }
+            .bslib-value-box {
+                border-radius: 12px !important;
+                box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04) !important;
+                border: 1px solid #e2e8f0 !important;
             }
             """
         )
     ),
     ui.tags.div(
+        ui.tags.div("🛡️ Metodología Multicriterio Oficial • CRITIC v2.0", class_="header-badge"),
         ui.tags.h2("Atlas Territorial de Problemáticas en Colombia"),
-        ui.tags.p("Consolidación de fuentes públicas, tasas estandarizadas y ponderación objetiva CRITIC"),
+        ui.tags.p("Consolidación analítica de fuentes públicas oficiales, tasas estandarizadas por 100.000 habitantes y ponderación objetiva de riesgo LAFT."),
         class_="atlas-header",
     ),
     ui.navset_card_tab(
@@ -87,6 +166,7 @@ app_ui = ui.page_sidebar(
         id="main_tabs",
     ),
     title="Atlas Territorial LAFT Colombia",
+    theme=ui.Theme("zephyr"),
     fillable=True,
 )
 

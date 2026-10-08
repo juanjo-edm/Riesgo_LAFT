@@ -6,10 +6,11 @@ from typing import Any, Dict
 import numpy as np
 import pandas as pd
 from shiny import module, reactive, render, ui
+from shinywidgets import output_widget, render_widget
 
 from src.components.cards import empty_state, metric_card
 from src.config import DIMENSIONES_TERRITORIALES, DIMENSION_LABELS
-from src.visualizations.radar import create_radar_chart
+from src.visualizations.radar import create_radar_chart, empty_radar_figure
 
 
 @module.ui
@@ -17,15 +18,19 @@ def department_profile_ui():
     return ui.TagList(
         ui.output_ui("resumen"),
         ui.layout_columns(
-            ui.tags.div(
-                ui.tags.h5("Intensidad Departamental por Dimensión (Gráfico Radial)", style="font-weight: 700; color: #1e293b; margin-bottom: 12px;"),
-                ui.output_ui("radar_chart"),
-                style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);",
+            ui.card(
+                ui.card_header(
+                    ui.span("🎯 Intensidad Departamental por Dimensión (Perfil Radial)", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                ),
+                output_widget("radar_chart"),
+                full_screen=True,
             ),
-            ui.tags.div(
-                ui.tags.h5("Dimensiones Ponderadas por Población", style="font-weight: 700; color: #1e293b; margin-bottom: 12px;"),
+            ui.card(
+                ui.card_header(
+                    ui.span("📋 Dimensiones Ponderadas por Población", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                ),
                 ui.output_data_frame("tabla_dimensiones"),
-                style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);",
+                full_screen=True,
             ),
             col_widths=[6, 6],
         ),
@@ -90,12 +95,12 @@ def department_profile_server(
         )
 
     @output
-    @render.ui
+    @render_widget
     def radar_chart():
         depto = selected_department()
         muns = department_municipios()
         if depto is None or muns.empty:
-            return None
+            return empty_radar_figure("Seleccione un departamento en el menú lateral para consultar su ficha técnica")
 
         # Ponderación poblacional de los municipios del departamento
         weights = muns["poblacion_total"].clip(lower=1.0)
@@ -123,7 +128,7 @@ def department_profile_server(
             benchmark_scores=bench_scores,
             benchmark_name="Promedio Nacional",
         )
-        return ui.HTML(fig.to_html(include_plotlyjs="cdn", full_html=False))
+        return fig
 
     @output
     @render.data_frame

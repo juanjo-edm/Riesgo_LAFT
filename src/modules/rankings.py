@@ -16,17 +16,20 @@ def rankings_ui():
     return ui.TagList(
         ui.output_ui("scale_note"),
         ui.output_ui("summary_cards"),
-        ui.tags.div(
-            ui.download_button(
-                "download_csv",
-                "Descargar Tabla (CSV)",
-                class_="btn-primary mb-3",
+        ui.card(
+            ui.card_header(
+                ui.div(
+                    ui.span("🏆 Clasificación General del Riesgo Territorial", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                    ui.download_button(
+                        "download_csv",
+                        "📥 Descargar CSV",
+                        class_="btn btn-sm btn-outline-primary",
+                    ),
+                    class_="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2",
+                ),
             ),
-            style="display: flex; justify-content: flex-end;",
-        ),
-        ui.tags.div(
             ui.output_data_frame("tabla_ranking"),
-            style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);",
+            full_screen=True,
         ),
     )
 
@@ -55,16 +58,17 @@ def rankings_server(input, output, session, filtered_data: reactive.Calc):
             count = counts.get(level, 0)
             color = INTENSIDAD_PALETTE.get(level, "#64748b")
             card = ui.tags.div(
-                ui.tags.span(level, style="display: block; color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;"),
-                ui.tags.strong(f"{count}", style="display: block; color: #0f172a; font-size: 1.3rem; font-weight: 700;"),
+                ui.tags.span(level, style="display: block; color: #64748b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"),
+                ui.tags.strong(f"{count:,}".replace(",", "."), style="display: block; color: #0f172a; font-size: 1.45rem; font-weight: 800; margin-top: 2px;"),
                 style=f"""
-                    background: #f8fafc;
+                    background: #ffffff;
                     border: 1px solid #e2e8f0;
                     border-top: 4px solid {color};
-                    border-radius: 8px;
-                    padding: 10px 14px;
+                    border-radius: 10px;
+                    padding: 12px 16px;
                     flex: 1;
-                    min-width: 120px;
+                    min-width: 130px;
+                    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
                 """,
             )
             cards.append(card)

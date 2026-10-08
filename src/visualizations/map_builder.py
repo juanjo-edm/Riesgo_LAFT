@@ -27,14 +27,13 @@ def build_ipyleaflet_map(
     Construye un mapa interactivo ipyleaflet con coropleta vectorial según el nivel
     de riesgo territorial y controles enriquecidos de navegación.
     """
-    # Crear instancia nueva de Map para cada sesión con renderizado Canvas de alto desempeño
+    # Crear instancia nueva de Map para cada sesión
     m = ipyleaflet.Map(
         center=COLOMBIA_CENTER,
         zoom=DEFAULT_ZOOM,
         basemap=ipyleaflet.basemaps.OpenStreetMap.Mapnik,
         scroll_wheel_zoom=True,
         attribution_control=True,
-        prefer_canvas=True,
     )
 
     # Controles de navegación y escala estándar
@@ -52,9 +51,11 @@ def build_ipyleaflet_map(
 
     # Control de información interactivo tipo Info Box (topright)
     info_widget = widgets.HTML(
-        value="""<div style="background: rgba(255, 255, 255, 0.95); padding: 10px 14px; border-radius: 8px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15); border: 1px solid #cbd5e1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-width: 210px;">
-        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #4338ca; letter-spacing: 0.5px;">Detalle Territorial</div>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Pase el cursor sobre un polígono</div>
+        value="""<div style="background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(8px); padding: 12px 16px; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1); border: 1px solid #cbd5e1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-width: 220px;">
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #4338ca; letter-spacing: 0.5px;">
+            <span>🔍</span> Detalle Territorial
+        </div>
+        <div style="font-size: 12px; color: #64748b; margin-top: 5px;">Pase el cursor sobre un territorio</div>
     </div>"""
     )
     info_control = ipyleaflet.WidgetControl(widget=info_widget, position="topright")
@@ -142,11 +143,12 @@ def build_ipyleaflet_map(
     # Actualización interactiva del Info Box en hover con deduplicación por ID territorial
     last_hovered_id = [None]
 
-    def on_feature_hover(event=None, feature=None, **kwargs):
-        if not feature or "properties" not in feature:
+    def on_feature_hover(feature=None, **kwargs):
+        feat = feature if feature is not None else kwargs.get("feature")
+        p = feat.get("properties") if isinstance(feat, dict) else kwargs.get("properties")
+        if not p:
             return
 
-        p = feature["properties"]
         feat_id = p.get(join_key)
         if feat_id is not None and feat_id == last_hovered_id[0]:
             return
@@ -163,25 +165,25 @@ def build_ipyleaflet_map(
         pob_str = f"{pob_val:,.0f}".replace(",", ".") if isinstance(pob_val, (int, float)) else "N/A"
 
         depto_line = (
-            f'<div style="font-size: 11px; color: #64748b; margin-bottom: 2px;">Depto: {depto}</div>'
+            f'<div style="font-size: 11px; color: #64748b; margin-bottom: 3px;">Depto: <b style="color: #334155;">{depto}</b></div>'
             if vista == "Municipios" and depto
             else ""
         )
         mpios_line = (
-            f'<div style="font-size: 11px; color: #64748b; margin-bottom: 2px;">Municipios evaluados: {p.get("municipios_total", "")}</div>'
+            f'<div style="font-size: 11px; color: #64748b; margin-bottom: 3px;">Municipios evaluados: <b style="color: #334155;">{p.get("municipios_total", "")}</b></div>'
             if vista == "Departamentos" and "municipios_total" in p
             else ""
         )
 
-        info_widget.value = f"""<div style="background: rgba(255, 255, 255, 0.98); padding: 10px 14px; border-radius: 8px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18); border: 1px solid #cbd5e1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-width: 220px;">
-        <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 2px;">{nombre}</div>
+        info_widget.value = f"""<div style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(8px); padding: 12px 16px; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.1); border: 1px solid #cbd5e1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-width: 230px;">
+        <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 2px;">{nombre}</div>
         {depto_line}
         {mpios_line}
-        <div style="margin: 6px 0; display: flex; align-items: center; justify-content: space-between;">
+        <div style="margin: 8px 0; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f1f5f9; padding-top: 6px;">
             <span style="font-size: 12px; color: #334155;"><b>Índice Activo:</b> {score_fmt}</span>
-            <span style="font-size: 11px; font-weight: 700; color: #ffffff; background: {badge_color}; padding: 2px 8px; border-radius: 10px;">{riesgo}</span>
+            <span style="font-size: 11px; font-weight: 700; color: #ffffff; background: {badge_color}; padding: 3px 10px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.15);">{riesgo}</span>
         </div>
-        <div style="font-size: 11px; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 4px;">Población: {pob_str} habs.</div>
+        <div style="font-size: 11px; color: #64748b;">Población: <b style="color: #334155;">{pob_str}</b> habs.</div>
     </div>"""
 
     geo_layer.on_hover(on_feature_hover)

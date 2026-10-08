@@ -67,29 +67,56 @@ def create_radar_chart(
             radialaxis=dict(
                 visible=True,
                 range=[0, radial_range_max],
-                tickfont=dict(size=10, color="#64748b"),
+                tickfont=dict(size=10, color="#64748b", family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"),
                 gridcolor="#e2e8f0",
+                linecolor="#cbd5e1",
             ),
             angularaxis=dict(
-                tickfont=dict(size=11, color="#0f172a"),
+                tickfont=dict(size=11, color="#0f172a", family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"),
                 direction="clockwise",
                 gridcolor="#e2e8f0",
+                linecolor="#cbd5e1",
             ),
-            bgcolor="rgba(248, 250, 252, 0.5)",
+            bgcolor="rgba(248, 250, 252, 0.6)",
         ),
         showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=-0.18,
+            y=-0.22,
             xanchor="center",
             x=0.5,
-            font=dict(size=12),
+            font=dict(size=12, color="#334155", family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"),
         ),
-        margin=dict(l=40, r=40, t=30, b=40),
+        margin=dict(l=45, r=45, t=35, b=45),
         height=450,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
     )
 
+    return fig
+
+
+def empty_radar_figure(message: str = "Seleccione un territorio para visualizar su perfil radial") -> go.Figure:
+    """
+    Retorna un Figure de Plotly con estado vacío elegante para inicialización segura en shinywidgets.
+    """
+    fig = go.Figure()
+    fig.add_annotation(
+        text=f"🎯 {message}",
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+        font=dict(size=14, color="#64748b", family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"),
+    )
+    fig.update_layout(
+        xaxis=dict(visible=False, showgrid=False, zeroline=False),
+        yaxis=dict(visible=False, showgrid=False, zeroline=False),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=450,
+        margin=dict(l=20, r=20, t=20, b=20),
+    )
     return fig
