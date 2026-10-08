@@ -71,15 +71,15 @@ La app estará disponible en `http://127.0.0.1:8000`.
 
 ## 📖 Cuaderno Metodológico (Quarto)
 
-El cuaderno técnico se encuentra en `cuaderno_metodologia/metodologia.qmd`. Integra la fundamentación jurídica (Código Penal art. 323, SARLAFT, GAFI), la justificación teórica y la ejecución en código Python de todo el pipeline.
+El cuaderno técnico se encuentra en `notebook_methodology/metodologia.qmd`. Integra la fundamentación jurídica (Código Penal art. 323, SARLAFT, GAFI), la justificación teórica y la ejecución en código Python de todo el pipeline.
 
 Para compilarlo a HTML interactivo:
 
 ```bash
-quarto render cuaderno_metodologia/metodologia.qmd
+quarto render notebook_methodology/metodologia.qmd
 ```
 
-El reporte compilado se genera en `cuaderno_metodologia/metodologia.html`.
+El reporte compilado se genera en `notebook_methodology/metodologia.html`.
 
 ---
 
