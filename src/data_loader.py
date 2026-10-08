@@ -23,7 +23,7 @@ class DataLoader:
     def load_all(self) -> Dict[str, Any]:
         """Carga todos los conjuntos de datos tabulares y geoespaciales."""
         if not self._data:
-            print(f"📦 Cargando conjuntos de datos Parquet desde {self.data_dir}...")
+            print(f"[INFO] Cargando conjuntos de datos Parquet desde {self.data_dir}...")
             if not self.data_dir.exists():
                 raise FileNotFoundError(f"No se encontró el directorio de datos procesados: {self.data_dir}")
             self._data["municipios"] = pd.read_parquet(self.data_dir / "municipios_total.parquet")
@@ -52,7 +52,7 @@ class DataLoader:
             else:
                 self._data["mapa_departamentos"] = None
 
-            print("✅ Datos cargados correctamente en memoria.")
+            print("[OK] Datos cargados correctamente en memoria.")
 
         return self._data
 

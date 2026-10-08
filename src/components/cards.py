@@ -63,13 +63,12 @@ def metric_card(title: str, value: str, subtitle: str | None = None, border_colo
 def empty_state(message: str) -> ui.Tag:
     """Mensaje para estados sin selección o sin datos."""
     return ui.tags.div(
-        ui.tags.div("📋", style="font-size: 2rem; margin-bottom: 8px; opacity: 0.8;"),
         ui.tags.p(message, style="margin: 0; font-size: 0.95rem; color: #64748b; font-weight: 500; max-width: 450px; margin: 0 auto;"),
         style="""
             background: #f8fafc;
             border: 2px dashed #cbd5e1;
             border-radius: 12px;
-            padding: 36px 20px;
+            padding: 32px 20px;
             text-align: center;
             margin: 16px 0;
         """,
@@ -79,7 +78,7 @@ def empty_state(message: str) -> ui.Tag:
 def method_note(text: str) -> ui.Tag:
     """Caja informativa para notas metodológicas."""
     return ui.tags.div(
-        ui.tags.div("💡 Nota metodológica", style="font-weight: 700; color: #312e81; margin-bottom: 4px; font-size: 0.85rem; letter-spacing: 0.3px;"),
+        ui.tags.div("Nota metodológica", style="font-weight: 700; color: #312e81; margin-bottom: 4px; font-size: 0.85rem; letter-spacing: 0.3px;"),
         ui.tags.div(text, style="font-size: 0.88rem; color: #334155; line-height: 1.5;"),
         style="""
             background: #f8fafc;

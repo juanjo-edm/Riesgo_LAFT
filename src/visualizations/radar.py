@@ -103,7 +103,7 @@ def empty_radar_figure(message: str = "Seleccione un territorio para visualizar 
     """
     fig = go.Figure()
     fig.add_annotation(
-        text=f"🎯 {message}",
+        text=message,
         xref="paper",
         yref="paper",
         x=0.5,

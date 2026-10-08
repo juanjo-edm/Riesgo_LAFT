@@ -6,7 +6,7 @@ from typing import Any, Dict
 import numpy as np
 import pandas as pd
 from shiny import module, reactive, render, ui
-from shinywidgets import output_widget, render_widget
+from shinywidgets import output_widget, render_plotly
 
 from src.components.cards import empty_state, metric_card
 from src.config import DIMENSIONES_TERRITORIALES, DIMENSION_LABELS
@@ -20,14 +20,14 @@ def department_profile_ui():
         ui.layout_columns(
             ui.card(
                 ui.card_header(
-                    ui.span("🎯 Intensidad Departamental por Dimensión (Perfil Radial)", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                    ui.span("Intensidad Departamental por Dimensión (Perfil Radial)", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
                 ),
                 output_widget("radar_chart"),
                 full_screen=True,
             ),
             ui.card(
                 ui.card_header(
-                    ui.span("📋 Dimensiones Ponderadas por Población", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                    ui.span("Dimensiones Ponderadas por Población", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
                 ),
                 ui.output_data_frame("tabla_dimensiones"),
                 full_screen=True,
@@ -50,12 +50,12 @@ def department_profile_server(
     def selected_department():
         f = filters_reactive()
         depto = f.get("departamento", "Todos")
-        if not depto or depto == "Todos":
-            return None
-
         active_df = departamentos_active_reactive()
-        match = active_df[active_df["dpto"] == depto]
-        return match.iloc[0] if not match.empty else None
+        if depto and depto != "Todos":
+            match = active_df[active_df["dpto"] == depto]
+            if not match.empty:
+                return match.iloc[0]
+        return active_df.iloc[0] if not active_df.empty else None
 
     @reactive.calc
     def department_municipios():
@@ -95,7 +95,7 @@ def department_profile_server(
         )
 
     @output
-    @render_widget
+    @render_plotly
     def radar_chart():
         depto = selected_department()
         muns = department_municipios()

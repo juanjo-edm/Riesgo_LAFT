@@ -23,7 +23,7 @@ def map_ui():
                 ui.div(
                     ui.div(
                         ui.span(
-                            "🗺️ Distribución Geográfica del Riesgo Territorial",
+                            "Distribución Geográfica del Riesgo Territorial",
                             style="font-weight: 700; font-size: 1.05rem; color: #1e1b4b;",
                         ),
                         ui.span(
@@ -38,7 +38,7 @@ def map_ui():
                     class_="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2",
                 ),
             ),
-            output_widget("territory_map"),
+            output_widget("territory_map", width="100%", height="650px"),
             full_screen=True,
             min_height="650px",
         ),

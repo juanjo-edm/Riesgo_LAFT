@@ -5,7 +5,7 @@ Módulo de Perfil Municipal con gráfico de telaraña Plotly y desglose de dimen
 from typing import Any, Dict
 import pandas as pd
 from shiny import module, reactive, render, ui
-from shinywidgets import output_widget, render_widget
+from shinywidgets import output_widget, render_plotly
 
 from src.components.cards import empty_state, metric_card
 from src.config import DIMENSIONES_TERRITORIALES, DIMENSION_LABELS, DIMENSION_SCORE_COLS
@@ -19,14 +19,14 @@ def profile_ui():
         ui.layout_columns(
             ui.card(
                 ui.card_header(
-                    ui.span("🎯 Intensidad por Dimensión (Perfil Radial)", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                    ui.span("Intensidad por Dimensión (Perfil Radial)", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
                 ),
                 output_widget("radar_chart"),
                 full_screen=True,
             ),
             ui.card(
                 ui.card_header(
-                    ui.span("📋 Desglose Detallado de Dimensiones", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                    ui.span("Desglose Detallado de Dimensiones", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
                 ),
                 ui.output_data_frame("tabla_dimensiones"),
                 full_screen=True,
@@ -51,14 +51,15 @@ def profile_server(
     def selected_municipio():
         f = filters_reactive()
         cod = f.get("municipio", "")
-        if not cod:
-            return None
-
         active_df = municipios_active_reactive()
-        match = active_df[active_df["cod_mpio"] == cod]
-        if match.empty:
-            match = municipios_base[municipios_base["cod_mpio"] == cod]
-        return match.iloc[0] if not match.empty else None
+        if cod:
+            match = active_df[active_df["cod_mpio"] == cod]
+            if not match.empty:
+                return match.iloc[0]
+            base_match = municipios_base[municipios_base["cod_mpio"] == cod]
+            if not base_match.empty:
+                return base_match.iloc[0]
+        return active_df.iloc[0] if not active_df.empty else (municipios_base.iloc[0] if not municipios_base.empty else None)
 
     @output
     @render.ui
@@ -90,7 +91,7 @@ def profile_server(
         )
 
     @output
-    @render_widget
+    @render_plotly
     def radar_chart():
         mun = selected_municipio()
         if mun is None:

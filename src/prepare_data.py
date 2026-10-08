@@ -51,7 +51,7 @@ def prepare_data(excel_path: Path | None = None) -> None:
                 "No se encontró atlas_territorial_publico.xlsx en data/raw/ ni en Output/"
             )
 
-    print(f"📖 Leyendo libro público desde: {excel_path}")
+    print(f"Leyendo libro público desde: {excel_path}")
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
     # 1. Catálogo de indicadores
@@ -145,7 +145,7 @@ def prepare_data(excel_path: Path | None = None) -> None:
                 pesos[col] = pesos[col].astype(str)
         pesos.to_parquet(PROCESSED_DIR / "pesos_objetivos.parquet", index=False)
 
-    print("\n✅ Datos Parquet preparados exitosamente en data/processed/:")
+    print("\nDatos Parquet preparados exitosamente en data/processed/:")
     print(f"  - Municipios: {len(municipios)} filas")
     print(f"  - Departamentos: {len(departamentos)} filas")
     print(f"  - Indicadores detallados: {len(indicadores)} filas")

@@ -24,12 +24,16 @@ from src.modules.rankings import rankings_server, rankings_ui
 # Cargar datos una sola vez al inicio del proceso
 app_data = load_app_data()
 
+deptos_choices = ["Todos"] + sorted(app_data["municipios"]["dpto"].dropna().unique().tolist())
+mpios_dict_init = {"": "Seleccione..."}
+for _, row in app_data["municipios"].sort_values("nom_mpio").iterrows():
+    mpios_dict_init[str(row["cod_mpio"])] = f"{row['nom_mpio']} ({row['dpto']})"
+
 app_ui = ui.page_sidebar(
     ui.sidebar(
-        filters_ui("filters"),
+        filters_ui("filters", departamentos=deptos_choices, municipios_dict=mpios_dict_init),
         width=340,
         title=ui.span(
-            ui.span("⚙️", style="margin-right: 6px;"),
             "Panel de Filtros",
             style="font-weight: 800; color: #1e1b4b; letter-spacing: -0.2px;",
         ),
@@ -153,16 +157,16 @@ app_ui = ui.page_sidebar(
         )
     ),
     ui.tags.div(
-        ui.tags.div("🛡️ Metodología Multicriterio Oficial • CRITIC v2.0", class_="header-badge"),
+        ui.tags.div("Metodología Multicriterio Oficial • CRITIC v2.0", class_="header-badge"),
         ui.tags.h2("Atlas Territorial de Problemáticas en Colombia"),
         ui.tags.p("Consolidación analítica de fuentes públicas oficiales, tasas estandarizadas por 100.000 habitantes y ponderación objetiva de riesgo LAFT."),
         class_="atlas-header",
     ),
     ui.navset_card_tab(
-        ui.nav_panel("🗺️ Mapa Territorial", map_ui("map")),
-        ui.nav_panel("📊 Rankings", rankings_ui("rankings")),
-        ui.nav_panel("🏛️ Perfil Municipal", profile_ui("profile")),
-        ui.nav_panel("🇨🇴 Perfil Departamental", department_profile_ui("department_profile")),
+        ui.nav_panel("Mapa Territorial", map_ui("map")),
+        ui.nav_panel("Rankings", rankings_ui("rankings")),
+        ui.nav_panel("Perfil Municipal", profile_ui("profile")),
+        ui.nav_panel("Perfil Departamental", department_profile_ui("department_profile")),
         id="main_tabs",
     ),
     title="Atlas Territorial LAFT Colombia",

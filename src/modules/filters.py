@@ -14,11 +14,14 @@ from src.config import (
 
 
 @module.ui
-def filters_ui():
+def filters_ui(departamentos: List[str] = None, municipios_dict: Dict[str, str] = None):
+    deptos = departamentos if departamentos is not None else ["Todos"]
+    mpios = municipios_dict if municipios_dict is not None else {"": "Seleccione..."}
+    selected_mpio = "11001" if "11001" in mpios else ("" if "" in mpios else list(mpios.keys())[0] if mpios else "")
+
     return ui.TagList(
         ui.tags.div(
             ui.tags.div(
-                ui.tags.span("📍", style="margin-right: 6px; font-size: 1rem;"),
                 ui.tags.span("Ámbito Territorial", style="font-weight: 700; color: #1e1b4b; font-size: 0.9rem; letter-spacing: 0.2px;"),
                 style="margin-bottom: 8px; display: flex; align-items: center;",
             ),
@@ -31,7 +34,7 @@ def filters_ui():
             ui.input_select(
                 "departamento",
                 "Departamento",
-                choices=["Todos"],
+                choices=deptos,
                 selected="Todos",
             ),
             ui.panel_conditional(
@@ -39,8 +42,8 @@ def filters_ui():
                 ui.input_select(
                     "municipio",
                     "Municipio específico",
-                    choices={"": "Seleccione..."},
-                    selected="",
+                    choices=mpios,
+                    selected=selected_mpio,
                 ),
             ),
             class_="filter-section mb-3",
@@ -48,7 +51,6 @@ def filters_ui():
         ui.tags.hr(style="margin: 14px 0; border-color: #e2e8f0;"),
         ui.tags.div(
             ui.tags.div(
-                ui.tags.span("⚖️", style="margin-right: 6px; font-size: 1rem;"),
                 ui.tags.span("Dimensiones de Análisis", style="font-weight: 700; color: #1e1b4b; font-size: 0.9rem; letter-spacing: 0.2px;"),
                 style="margin-bottom: 4px; display: flex; align-items: center;",
             ),
@@ -76,7 +78,6 @@ def filters_ui():
         ui.tags.hr(style="margin: 14px 0; border-color: #e2e8f0;"),
         ui.tags.div(
             ui.tags.div(
-                ui.tags.span("🚥", style="margin-right: 6px; font-size: 1rem;"),
                 ui.tags.span("Niveles de Intensidad", style="font-weight: 700; color: #1e1b4b; font-size: 0.9rem; letter-spacing: 0.2px;"),
                 style="margin-bottom: 8px; display: flex; align-items: center;",
             ),
@@ -101,14 +102,9 @@ def filters_server(input, output, session, data: Dict[str, pd.DataFrame]):
     municipios_df = data["municipios"]
     catalogo_df = data["catalogo_indicadores"]
 
-    # Poblar departamentos en el select
+    # Actualizar municipios únicamente cuando el usuario cambia de departamento
     @reactive.effect
-    def _init_departamentos():
-        deptos = ["Todos"] + sorted(municipios_df["dpto"].dropna().unique().tolist())
-        ui.update_select("departamento", choices=deptos, selected="Todos")
-
-    # Actualizar municipios según departamento seleccionado
-    @reactive.effect
+    @reactive.event(input.departamento, ignore_init=True)
     def _update_municipios():
         depto = input.departamento()
         if not depto or depto == "Todos":
@@ -123,7 +119,16 @@ def filters_server(input, output, session, data: Dict[str, pd.DataFrame]):
             mpios_dict[str(row["cod_mpio"])] = f"{row['nom_mpio']} ({row['dpto']})"
 
         current_val = input.municipio()
-        selected_val = current_val if current_val in mpios_dict else ""
+        if current_val in mpios_dict and current_val != "":
+            selected_val = current_val
+        elif "11001" in mpios_dict:
+            selected_val = "11001"
+        elif "05001" in mpios_dict:
+            selected_val = "05001"
+        else:
+            first_key = [k for k in mpios_dict if k != ""]
+            selected_val = first_key[0] if first_key else ""
+
         ui.update_select("municipio", choices=mpios_dict, selected=selected_val)
 
     # Actualizar fuentes disponibles según dimensiones seleccionadas

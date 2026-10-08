@@ -19,10 +19,10 @@ def rankings_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("🏆 Clasificación General del Riesgo Territorial", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                    ui.span("Clasificación General del Riesgo Territorial", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
                     ui.download_button(
                         "download_csv",
-                        "📥 Descargar CSV",
+                        "Descargar CSV",
                         class_="btn btn-sm btn-outline-primary",
                     ),
                     class_="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2",
