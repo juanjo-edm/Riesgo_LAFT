@@ -10,7 +10,7 @@ Este directorio contiene los módulos independientes de interfaz y servidor de l
 src/modules/
 ├── __init__.py
 ├── filters.py             # Módulo de barra lateral (Sidebar) y controles reactivos
-├── map.py                 # Módulo de visualización cartográfica interactiva con Folium
+├── map.py                 # Módulo de visualización cartográfica interactiva con ipyleaflet
 ├── rankings.py            # Módulo de tabla clasificatoria (DataGrid) y exportación
 ├── profile.py             # Ficha técnica municipal y gráfico de telaraña Plotly
 ├── department_profile.py  # Ficha departamental con agregación ponderada y radar
@@ -49,17 +49,17 @@ Controla la barra lateral y los parámetros de filtrado global del usuario.
 
 ---
 
-### 2. `map.py` (Módulo de Mapa Interactivo)
+### 2. `map.py` (Módulo de Mapa Interactivo con ipyleaflet)
 
-Renderiza el mapa coroplético de Colombia con Folium y tarjetas resumen de cobertura.
+Renderiza el mapa coroplético vectorial de Colombia con **ipyleaflet** y tarjetas métricas nativas de **bslib** (`ui.value_box`).
 
 - **UI (`map_ui`):**
-  - Contenedor superior para tarjetas métricas (`metrics_summary`).
-  - Contenedor aislado para el mapa embebido (`map_container`).
+  - Fila superior de tarjetas de valor (`ui.value_box`) con iconos FontAwesome accesibles (`faicons`).
+  - Tarjeta de mapa (`ui.card(..., full_screen=True, min_height="650px")`) que aloja `shinywidgets.output_widget("territory_map")`.
 - **Servidor (`map_server`):**
-  - **Métricas:** Calcula en tiempo real el total de territorios visibles, el puntaje promedio activo, la categoría predominante y la población total cubierta.
-  - **Mapa Folium:** Realiza el cruce (*inner join*) entre las geometrías simplificadas (`mapa_municipios` o `mapa_departamentos`) y la tabla reactiva activa, aplicando colores según la paleta institucional y agregando tooltips interactivos con popups.
-  - **Aislamiento HTML:** Renderiza el mapa mediante un `iframe` seguro con `srcdoc`, evitando colisiones de CSS o scripts con la ventana principal de Shiny.
+  - **Métricas:** Calcula en tiempo real el total de territorios visibles, el puntaje promedio activo, la categoría de riesgo predominante con badge semántico y la población total cubierta.
+  - **Mapa Vectorial Nativo:** Construido por sesión a través de `@render_widget` y `build_ipyleaflet_map`. Aplica coropleta con paleta accesible, control de escala, control de pantalla completa, leyenda fija (`LegendControl`) e Info Box interactivo en tiempo real (`WidgetControl`) al posicionar el cursor sobre cada territorio.
+  - **Sin Iframes:** Integrado directamente en el canal WebSocket de Shiny for Python a través de `shinywidgets`, garantizando máxima velocidad y compatibilidad con Posit Cloud y Posit Connect.
 
 ---
 

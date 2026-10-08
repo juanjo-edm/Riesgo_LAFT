@@ -23,6 +23,9 @@ dependencies = [
     "pyyaml>=6.0.3",
     "nbclient>=0.11.0",
     "jupyter>=1.1.1",
+    "ipyleaflet>=0.20.0",
+    "rsconnect-python>=1.31.1",
+    "faicons>=0.2.2",
 ]
 
 [tool.uv]

@@ -193,13 +193,8 @@ def server(input, output, session):
         municipios_active_reactive=municipios_active,
     )
 
-from starlette.routing import Route
-from src.modules.map import get_active_map_html_response
-
 app = App(app_ui, server, static_assets=WWW_DIR)
-# Rutas prioritarias para servir el mapa en memoria de forma instantánea y sin bloqueos
-app.starlette_app.routes.insert(0, Route("/active_map.html", get_active_map_html_response, methods=["GET"]))
-app.starlette_app.routes.insert(0, Route("/map_view", get_active_map_html_response, methods=["GET"]))
 
 if __name__ == "__main__":
     app.run(port=8000)
+

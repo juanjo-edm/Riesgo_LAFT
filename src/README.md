@@ -19,7 +19,7 @@ src/
 │   └── cards.py              # Tarjetas de resumen métrico, badges de riesgo y notas
 ├── visualizations/           # Constructores de gráficos y mapas
 │   ├── __init__.py
-│   ├── map_builder.py        # Generador de mapas coropléticos con Folium
+│   ├── map_builder.py        # Generador de mapas coropléticos interactivos con ipyleaflet
 │   └── radar.py              # Generador de gráficos radiales interactivos con Plotly
 ├── modules/                  # Módulos Shiny independientes (UI + Server)
 │   ├── ...
