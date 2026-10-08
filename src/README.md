@@ -73,6 +73,6 @@ Script que transforma el libro público consolidado `Output/atlas_territorial_pu
   - `empty_state(message)`: Mensaje visual cuando no hay un elemento seleccionado.
   - `method_note(text)`: Caja de texto informativa para notas metodológicas.
 - **`src/visualizations/map_builder.py`:**
-  - `build_choropleth_map(...)`: Genera un mapa Folium en proyección EPSG:4326 con capa GeoJSON interactiva, estilo dinámico por nivel de riesgo, resaltado al pasar el cursor y leyenda flotante.
+  - `build_ipyleaflet_map(...)`: Genera un mapa interactivo ipyleaflet nativo para Shiny con capa vectorial GeoData, paleta institucional por nivel de riesgo, Info Box interactivo en tiempo real con WidgetControl, controles de pantalla completa, escala y leyenda fija.
 - **`src/visualizations/radar.py`:**
   - `create_radar_chart(...)`: Construye el gráfico de telaraña (*spider chart*) en Plotly comparando las 13 dimensiones de un territorio contra el promedio nacional.

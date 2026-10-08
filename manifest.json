@@ -20,7 +20,7 @@
   },
   "files": {
     "requirements.txt": {
-      "checksum": "202e666f59e3350a29e31b51398aaf91"
+      "checksum": "7bec5bff1981c021ce67c67e72e5701a"
     },
     ".gitignore": {
       "checksum": "8368e0c91d810fd87bd6f7f1180f3f47"
@@ -65,13 +65,13 @@
       "checksum": "a69c69ec7180c7df5290ccde7e974966"
     },
     "pyproject.toml": {
-      "checksum": "38441d98b4f2fbda5c41b753d23a9e1f"
+      "checksum": "57ac2d36c86415fc44c9ad286f123950"
     },
     "run.sh": {
       "checksum": "b863e1e7c44241f9d13a89bee3a2e92d"
     },
     "src/README.md": {
-      "checksum": "15108ba3804f1fa5b557702374daa4a6"
+      "checksum": "eda2088082180718d775b303cac64bb5"
     },
     "src/calculator.py": {
       "checksum": "866005e5d1a05422744ebc39959d3b7d"
@@ -116,7 +116,7 @@
       "checksum": "0e010d131b3eab6747f3a135249837a9"
     },
     "uv.lock": {
-      "checksum": "f3d8d3f042ec76bc7d3f6fa1290f0cba"
+      "checksum": "40403baedfa4396bbd9f07daf84ab1ca"
     }
   }
 }

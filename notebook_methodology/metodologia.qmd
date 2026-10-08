@@ -95,6 +95,7 @@ import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
+import plotnine as p9
 from scipy import stats
 from sklearn.cluster import KMeans
 
@@ -116,18 +117,20 @@ if not ruta_datos_insumo.exists():
     ruta_datos_insumo = Path("notebook_methodology") / "data" / "atlas_territorial_publico.xlsx"
 
 # Carpeta central de salida en la raíz donde la app Shiny lee la data
-ruta_salida_parquet = Path("..") / "data" / "processed"
-if not ruta_salida_parquet.parent.exists():
-    ruta_salida_parquet = Path("data") / "processed"
+carpeta_data_base = Path("..") / "Data" if (Path("..") / "Data").is_dir() else Path("..") / "data"
+if not carpeta_data_base.exists():
+    carpeta_data_base = Path("Data") if Path("Data").is_dir() else Path("data")
+ruta_salida_parquet = carpeta_data_base / "processed"
 ruta_salida_parquet.mkdir(parents=True, exist_ok=True)
 
 # -------------------------------------------------------------
-# Parámetros metodológicos globales
+# Parámetros metodológicos globales y paleta de colores
 # -------------------------------------------------------------
 semilla_aleatoria = 123             # Semilla para garantizar reproducibilidad exacta
 cuantiles_winsor = (0.01, 0.99)     # Percentiles 1% y 99% para recorte de outliers
 numero_clusters = 4                 # 4 categorías de intensidad de riesgo
 nombres_niveles = ["Bajo", "Medio", "Alto", "Muy alto"] # Etiquetas ordenadas
+paleta_intensidad = {"Bajo": "#8BC34A", "Medio": "#F2C94C", "Alto": "#F2994A", "Muy alto": "#D7191C"}
 iteraciones_kmeans = 100            # Iteraciones máximas por ajuste de cluster
 inicializaciones_kmeans = 50        # Múltiples inicios aleatorios para convergencia
 
@@ -340,6 +343,47 @@ df_pesos = pd.DataFrame({
 df_pesos
 ```
 
+### Visualización de Ponderaciones CRITIC con Plotnine
+
+**Explicación intuitiva:**
+Para interpretar visualmente la importancia relativa asignada a cada problemática, se genera un diagrama de barras horizontal ordenado mediante `plotnine` (gramática de gráficos estilo `ggplot2`). Este gráfico permite identificar qué dimensiones aportan mayor información objetiva al índice general en función de su contraste y su baja correlación con las demás variables.
+
+```{python}
+# Preparar datos ordenados para el gráfico de barras horizontal
+df_pesos_grafico = df_pesos.copy()
+df_pesos_grafico["dimension_id"] = pd.Categorical(
+    df_pesos_grafico["dimension_id"],
+    categories=df_pesos_grafico.sort_values("peso_pct")["dimension_id"],
+    ordered=True
+)
+
+# Construir gráfico de barras ordenado con plotnine
+grafico_pesos = (
+    p9.ggplot(df_pesos_grafico, p9.aes(x="dimension_id", y="peso_pct"))
+    + p9.geom_col(fill="#312e81", width=0.65)
+    + p9.geom_text(
+        p9.aes(label="peso_pct.round(1).astype(str) + '%'"),
+        nudge_y=0.45,
+        size=8
+    )
+    + p9.coord_flip()
+    + p9.labs(
+        title="Ponderación Objetiva CRITIC por Dimensión Territorial",
+        subtitle="Porcentaje de contribución relativa al Índice Compuesto LAFT",
+        x="Dimensión",
+        y="Peso Relativo (%)"
+    )
+    + p9.theme_minimal()
+    + p9.theme(
+        figure_size=(8, 4.5),
+        plot_title=p9.element_text(weight="bold", size=11),
+        plot_subtitle=p9.element_text(color="#64748b", size=9)
+    )
+)
+
+grafico_pesos
+```
+
 ## Ponderación de Scores y Cálculo del Índice Territorial Compuesto
 
 **Explicación intuitiva:**
@@ -407,6 +451,87 @@ df_calculo_mun["intensidad"] = df_calculo_mun["cluster_total"].map(
 # Resumen de distribución municipal resultante
 conteo_distribucion = df_calculo_mun["intensidad_territorial"].value_counts().reindex(nombres_niveles)
 pd.DataFrame({"Nivel": conteo_distribucion.index, "Municipios": conteo_distribucion.values})
+```
+
+### Visualización de la Distribución Municipal con Plotnine
+
+**Explicación intuitiva:**
+Para verificar el comportamiento de la segmentación K-Means sobre el continuo territorial, se genera un histograma con la distribución del Índice Compuesto coloreado según los 4 niveles de riesgo. Este gráfico ilustra cómo se agrupan los municipios y los cortes empíricos generados por el algoritmo.
+
+```{python}
+# Preparar datos categóricos ordenados para plotnine
+df_plot_mun = df_calculo_mun.copy()
+df_plot_mun["intensidad_territorial"] = pd.Categorical(
+    df_plot_mun["intensidad_territorial"],
+    categories=nombres_niveles,
+    ordered=True
+)
+
+# Histograma del índice compuesto por categoría de riesgo
+grafico_distribucion_mun = (
+    p9.ggplot(df_plot_mun, p9.aes(x="INDICE_TERRITORIAL", fill="intensidad_territorial"))
+    + p9.geom_histogram(bins=35, color="white", alpha=0.85)
+    + p9.scale_fill_manual(values=paleta_intensidad)
+    + p9.labs(
+        title="Distribución del Índice Territorial Compuesto por Cluster K-Means",
+        subtitle="1.122 municipios colombianos clasificados en 4 niveles de intensidad",
+        x="Índice Territorial Compuesto",
+        y="Número de Municipios",
+        fill="Intensidad"
+    )
+    + p9.theme_minimal()
+    + p9.theme(
+        figure_size=(8, 4),
+        plot_title=p9.element_text(weight="bold", size=11),
+        plot_subtitle=p9.element_text(color="#64748b", size=9)
+    )
+)
+
+grafico_distribucion_mun
+```
+
+### Frecuencia Territorial por Nivel de Riesgo
+
+**Explicación intuitiva:**
+Este gráfico de barras sintetiza el número absoluto y la participación porcentual de los municipios del país en cada una de las 4 categorías, evidenciando que la gran mayoría del territorio nacional se concentra en niveles bajos o medios, mientras que los municipios de intensidad alta y muy alta representan focos específicos y prioritarios de atención.
+
+```{python}
+# Tabla resumen de frecuencias para el gráfico de barras
+df_frec_mun = (
+    df_plot_mun["intensidad_territorial"]
+    .value_counts()
+    .reindex(nombres_niveles)
+    .reset_index()
+)
+df_frec_mun.columns = ["nivel", "conteo"]
+df_frec_mun["porcentaje"] = (df_frec_mun["conteo"] / len(df_plot_mun)) * 100.0
+df_frec_mun["nivel"] = pd.Categorical(df_frec_mun["nivel"], categories=nombres_niveles, ordered=True)
+
+# Construcción del gráfico de barras con plotnine
+grafico_barras_niveles = (
+    p9.ggplot(df_frec_mun, p9.aes(x="nivel", y="conteo", fill="nivel"))
+    + p9.geom_col(show_legend=False, width=0.55)
+    + p9.geom_text(
+        p9.aes(label="conteo.astype(str) + ' (' + porcentaje.round(1).astype(str) + '%)'"),
+        nudge_y=25,
+        size=9
+    )
+    + p9.scale_fill_manual(values=paleta_intensidad)
+    + p9.labs(
+        title="Frecuencia y Participación de Municipios por Nivel de Riesgo",
+        subtitle="Consolidado nacional de intensidades territoriales",
+        x="Nivel de Intensidad",
+        y="Cantidad de Municipios"
+    )
+    + p9.theme_minimal()
+    + p9.theme(
+        figure_size=(7.5, 4),
+        plot_title=p9.element_text(weight="bold", size=11),
+        plot_subtitle=p9.element_text(color="#64748b", size=9)
+    )
+)
+
+grafico_barras_niveles
 ```
 
 ## Ensamble Final de Municipios con Metadatos Oficiales
@@ -496,6 +621,56 @@ df_deptos_final["intensidad_territorial_depto"] = [mapa_niv_dpto[c] for c in clu
 df_deptos_final["METODO_DEPTO"] = "Promedio ponderado por población municipal clasificado por K-Means"
 
 df_deptos_final[["cod_dpto", "dpto", "municipios_total", "INDICE_TERRITORIAL_DEPTO", "intensidad_territorial_depto"]].head(6)
+```
+
+### Visualización del Ranking Departamental con Plotnine
+
+**Explicación intuitiva:**
+Para contrastar el nivel de riesgo agregado entre las principales entidades territoriales del país, se grafica el Top 15 de departamentos con mayor Índice Territorial Ponderado, diferenciando con color el nivel de intensidad resultante del clustering K-Means.
+
+```{python}
+# Seleccionar los 15 departamentos con mayor índice ponderado
+df_top_deptos = df_deptos_final.sort_values(by="INDICE_TERRITORIAL_DEPTO", ascending=False).head(15).copy()
+
+# Ordenar categorías para presentación en el eje vertical
+df_top_deptos["dpto"] = pd.Categorical(
+    df_top_deptos["dpto"],
+    categories=df_top_deptos.sort_values("INDICE_TERRITORIAL_DEPTO")["dpto"],
+    ordered=True
+)
+df_top_deptos["intensidad_territorial_depto"] = pd.Categorical(
+    df_top_deptos["intensidad_territorial_depto"],
+    categories=nombres_niveles,
+    ordered=True
+)
+
+# Gráfico de barras horizontal con plotnine
+grafico_top_deptos = (
+    p9.ggplot(df_top_deptos, p9.aes(x="dpto", y="INDICE_TERRITORIAL_DEPTO", fill="intensidad_territorial_depto"))
+    + p9.geom_col(width=0.68)
+    + p9.geom_text(
+        p9.aes(label="INDICE_TERRITORIAL_DEPTO.round(2).astype(str)"),
+        nudge_y=0.4,
+        size=8
+    )
+    + p9.scale_fill_manual(values=paleta_intensidad)
+    + p9.coord_flip()
+    + p9.labs(
+        title="Top 15 Departamentos con Mayor Intensidad Territorial Agregada",
+        subtitle="Índice departamental ponderado por población municipal (Censo DANE)",
+        x="Departamento",
+        y="Índice Territorial Compuesto Ponderado",
+        fill="Nivel"
+    )
+    + p9.theme_minimal()
+    + p9.theme(
+        figure_size=(8, 5),
+        plot_title=p9.element_text(weight="bold", size=11),
+        plot_subtitle=p9.element_text(color="#64748b", size=9)
+    )
+)
+
+grafico_top_deptos
 ```
 
 ## Exportación Oficial de Archivos Parquet para la Aplicación Shiny
