@@ -22,20 +22,29 @@
     "requirements.txt": {
       "checksum": "7bec5bff1981c021ce67c67e72e5701a"
     },
+    ".Rhistory": {
+      "checksum": "994be9629acaa87371028bf5e8290292"
+    },
     ".gitignore": {
       "checksum": "8368e0c91d810fd87bd6f7f1180f3f47"
+    },
+    "Data/INCAUTACIO\u0301N ORO Y MERCURIO (1).xlsx": {
+      "checksum": "a9a0e61f2fd013c35af399597f68c6f5"
+    },
+    "Data/PERSONAS_DEMOGRAFICO_Cuadros_CNPV_2018.xlsx": {
+      "checksum": "9ee4d5a70e449b9fafef4edb99355eac"
     },
     "Data/geodata/mapa_departamentos.geojson": {
       "checksum": "9c203ba981db95d7e6e2e6d3a6ce5b7a"
     },
     "Data/geodata/mapa_departamentos.parquet": {
-      "checksum": "7895f7faa0affdad9c99b3a85bb3f935"
+      "checksum": "ebf13c38bc79596b7c475aeee516bab8"
     },
     "Data/geodata/mapa_municipios.geojson": {
       "checksum": "baa1cb9e6353e78babc6bbfe3ee01ce7"
     },
     "Data/geodata/mapa_municipios.parquet": {
-      "checksum": "fd8edde5eba0edf4395933d2a4a08885"
+      "checksum": "1c3f81160133d8831b6dd6b7d4c580c6"
     },
     "Data/processed/catalogo_indicadores.parquet": {
       "checksum": "46f7fbf134585d269642d461af850d21"
@@ -55,8 +64,98 @@
     "Data/processed/pesos_objetivos.parquet": {
       "checksum": "a7bc2066ee8b12d48222acaa67230f5e"
     },
+    "Data/raw/atlas_territorial_publico.xlsx": {
+      "checksum": "4287cbd3028b4ebcd1c58e4618633673"
+    },
+    "Documentacion/Cuadernos/Cuaderno Narcotrafico.Rmd": {
+      "checksum": "cee66dda9728cb6db29a29c3e81f3a23"
+    },
+    "Documentacion/Cuadernos/Cuaderno Terrorismo FT.Rmd": {
+      "checksum": "4cd5bd3d7dbe0a0a90b65bb819077677"
+    },
+    "Documentacion/Cuadernos/Cuaderno Trata y Migrantes.Rmd": {
+      "checksum": "5ce4b3a3db23794961dd34bf833270d2"
+    },
+    "Documentacion/Cuadernos/Cuaderno Violencia y Seguridad Ciudadana.Rmd": {
+      "checksum": "a13d9fccb47b0a67cf50b50a30069eaf"
+    },
+    "Documentacion/Fuentes/Descripcion fuentes.xlsx": {
+      "checksum": "9aecb2136e3f4a2dc559ed4fffed7a38"
+    },
     "README.md": {
       "checksum": "c2de8a102f2978f10806097a929e1e27"
+    },
+    "Scripts/Contrabando/Calculo de tasas.R": {
+      "checksum": "1d827ed79fa601ee8c7987e09a1e4a40"
+    },
+    "Scripts/Contrabando/Calculo riego.R": {
+      "checksum": "5feb9dc296916fad06b7db5555438a51"
+    },
+    "Scripts/Contrabando/Pirateria terrestre.R": {
+      "checksum": "b3a79bb2677aa2d3b2b2b0d2b176cdaa"
+    },
+    "Scripts/Contrabando/Tabla Fiscalia Contrabando.R": {
+      "checksum": "040f7624a8a548d8b2ed605da651fc07"
+    },
+    "Scripts/Corrupcion/Tabla Fiscalia DCA.R": {
+      "checksum": "2fe412627cb5575b333e266b55d2fee0"
+    },
+    "Scripts/DANE/Lectura tabla DANE.R": {
+      "checksum": "607c820029034f785ebc22c3a456c357"
+    },
+    "Scripts/Delitos Ambientales/Tabla Delitos Ambientales.R": {
+      "checksum": "83053ef1e608b8b56cb7ad2c4cfde541"
+    },
+    "Scripts/Extorsio\u0301n y control territorial/Extorsio\u0301n.R": {
+      "checksum": "2ef899e5ce632530768a8a9248c8bcfb"
+    },
+    "Scripts/Extorsio\u0301n y control territorial/Secuestro.R": {
+      "checksum": "784b399d7110132303566d36fc479efd"
+    },
+    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/CAPTURAS POR MINERI\u0301A ILEGAL.R": {
+      "checksum": "c587ceb75ef4df46823ef7408fe05fed"
+    },
+    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/IINCAUTACION DE ORO Y MERCURIO.R": {
+      "checksum": "b1b4b9127e345c7847e6caa40fd0a179"
+    },
+    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/INCAUTACIONES Y DESTRUCCIONES MAQUINARIA EXPLOTACIO\u0301N ILI\u0301CITA DE MINERALES.R": {
+      "checksum": "7d612c98228aec1a47cd46913de04391"
+    },
+    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/MINAS INTERVENIDAS.R": {
+      "checksum": "4d65b3de8f5424a1961f4c3dd9e85a44"
+    },
+    "Scripts/Narcotrafico/Cultivos Ilicitos.R": {
+      "checksum": "a68f96b9e7e1ff8ce22487918a78dcda"
+    },
+    "Scripts/Narcotrafico/Destruccion de infrastructura de produccion de drogas ilicitas.R": {
+      "checksum": "627c0a043f6d90bfb41fcf5f5c105f9b"
+    },
+    "Scripts/Narcotrafico/Incautaciones de base de coca.R": {
+      "checksum": "7cc37a0ae64d8f758e9641d34fd163b5"
+    },
+    "Scripts/Narcotrafico/Incautaciones de basuco.R": {
+      "checksum": "0b1ded78ce0360764500ca066b3eb989"
+    },
+    "Scripts/Narcotrafico/Incautaciones de cocaina.R": {
+      "checksum": "da41553dd0d5044b7921979b0b4e6acb"
+    },
+    "Scripts/Narcotrafico/Incautaciones de insumos liquidos.R": {
+      "checksum": "de8ff3c335699faf5f6924d33b9fee48"
+    },
+    "Scripts/Narcotrafico/Incautaciones de insumos solidos.R": {
+      "checksum": "f3ffa478535c327f365f699c89ab8c33"
+    },
+    "Scripts/Narcotrafico/Incautaciones de marihuana.R": {
+      "checksum": "fab119997fd450e90c1a02358ecab55e"
+    },
+    "Scripts/Narcotrafico/Incautaciones heroina.R": {
+      "checksum": "d2b55b3573e8c89d3217b4bd98bd968c"
+    },
+    "Scripts/territorial_exports.R": {
+      "checksum": "f2c166c096bfa908dae9fa2dcf2c11df"
+    },
+    "Utils/Funciones.R": {
+      "checksum": "82f19b9d62f3e260d891959de51d78b4"
     },
     "app.py": {
       "checksum": "cccc079b11a4188cf0dab0ca50f0b57e"
@@ -71,10 +170,22 @@
       "checksum": "b863e1e7c44241f9d13a89bee3a2e92d"
     },
     "src/README.md": {
-      "checksum": "eda2088082180718d775b303cac64bb5"
+      "checksum": "85fbcf530928151b719f87c4d7012f1e"
+    },
+    "src/__pycache__/calculator.cpython-311.pyc": {
+      "checksum": "40d3fb369262698ab5d87e5221dd5585"
+    },
+    "src/__pycache__/config.cpython-311.pyc": {
+      "checksum": "5506129828738f859067ff4c5741c5c4"
+    },
+    "src/__pycache__/data_loader.cpython-311.pyc": {
+      "checksum": "e2c4e902891069932c1fb2cbc9b1da66"
     },
     "src/calculator.py": {
       "checksum": "866005e5d1a05422744ebc39959d3b7d"
+    },
+    "src/components/__pycache__/cards.cpython-311.pyc": {
+      "checksum": "f586139bd625b27012371ef6b5df5ce5"
     },
     "src/components/cards.py": {
       "checksum": "b1c7319b21d0e44e40eb5d41ba80302f"
@@ -90,6 +201,21 @@
     },
     "src/modules/README.md": {
       "checksum": "81a8284624043b3e099bce7d0ca14de6"
+    },
+    "src/modules/__pycache__/department_profile.cpython-311.pyc": {
+      "checksum": "a53cb415c62e785905e405e666a3a081"
+    },
+    "src/modules/__pycache__/filters.cpython-311.pyc": {
+      "checksum": "c7cb6c8459d237c24d6ec00544690157"
+    },
+    "src/modules/__pycache__/map.cpython-311.pyc": {
+      "checksum": "d6bfcbd4fb5e8f8a3c5baea59379f99e"
+    },
+    "src/modules/__pycache__/profile.cpython-311.pyc": {
+      "checksum": "f7628b1f54a8105c40d0ba57b5dfe092"
+    },
+    "src/modules/__pycache__/rankings.cpython-311.pyc": {
+      "checksum": "f55638e03641d0f9adc82cbc129a9a8c"
     },
     "src/modules/department_profile.py": {
       "checksum": "9dae122ad75fcfefea99103d07236843"
@@ -109,8 +235,14 @@
     "src/prepare_data.py": {
       "checksum": "5b03fa351c85f94f0ba62e499212ac9d"
     },
+    "src/visualizations/__pycache__/map_builder.cpython-311.pyc": {
+      "checksum": "c6e8cc308505b47374ee445be00e3e81"
+    },
+    "src/visualizations/__pycache__/radar.cpython-311.pyc": {
+      "checksum": "c605f467ea3f76c9b4d514a80672cbdc"
+    },
     "src/visualizations/map_builder.py": {
-      "checksum": "45e7c8ee9bea191edc3cee0aa23d50fc"
+      "checksum": "c31373a1412509fd9d2cc51d069407ca"
     },
     "src/visualizations/radar.py": {
       "checksum": "0e010d131b3eab6747f3a135249837a9"

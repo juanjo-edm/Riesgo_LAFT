@@ -3,6 +3,7 @@ Constructor de mapas coropléticos interactivos con ipyleaflet para Shiny for Py
 """
 
 from typing import Any, Dict, Optional
+import json
 import geopandas as gpd
 import ipyleaflet
 import ipywidgets as widgets
@@ -26,13 +27,14 @@ def build_ipyleaflet_map(
     Construye un mapa interactivo ipyleaflet con coropleta vectorial según el nivel
     de riesgo territorial y controles enriquecidos de navegación.
     """
-    # Crear instancia nueva de Map para cada sesión (aislamiento de sesión)
+    # Crear instancia nueva de Map para cada sesión con renderizado Canvas de alto desempeño
     m = ipyleaflet.Map(
         center=COLOMBIA_CENTER,
         zoom=DEFAULT_ZOOM,
         basemap=ipyleaflet.basemaps.OpenStreetMap.Mapnik,
         scroll_wheel_zoom=True,
         attribution_control=True,
+        prefer_canvas=True,
     )
 
     # Controles de navegación y escala estándar
@@ -104,21 +106,24 @@ def build_ipyleaflet_map(
     if "municipios_total" in merged.columns:
         cols.append("municipios_total")
 
-    sub_gdf = merged[[c for c in cols if c in merged.columns or c == "geometry"]]
+    sub_gdf = merged[[c for c in cols if c in merged.columns or c == "geometry"]].copy()
 
-    # Función de estilo dinámico por polígono
-    def style_callback(feature: Dict[str, Any]) -> Dict[str, Any]:
-        props = feature.get("properties", {})
-        riesgo = props.get(risk_col, "Bajo")
-        fill_color = INTENSIDAD_PALETTE.get(riesgo, "#8BC34A")
-
-        return {
-            "fillColor": fill_color,
-            "color": "#334155" if vista == "Departamentos" else "#64748b",
-            "weight": 1.2 if vista == "Departamentos" else 0.6,
+    # Precomputar estilos directamente en el DataFrame para evitar deepcopy y bucles lentos
+    border_color = "#334155" if vista == "Departamentos" else "#64748b"
+    border_weight = 1.2 if vista == "Departamentos" else 0.6
+    sub_gdf["style"] = [
+        {
+            "fillColor": INTENSIDAD_PALETTE.get(r, "#8BC34A"),
+            "color": border_color,
+            "weight": border_weight,
             "fillOpacity": 0.75,
             "opacity": 0.85,
         }
+        for r in sub_gdf[risk_col]
+    ]
+
+    # Convertir a diccionario GeoJSON optimizado
+    geojson_dict = json.loads(sub_gdf.to_json())
 
     # Estilo al pasar el cursor (hover)
     hover_style = {
@@ -128,19 +133,25 @@ def build_ipyleaflet_map(
         "fillOpacity": 0.9,
     }
 
-    geo_layer = ipyleaflet.GeoData(
-        geo_dataframe=sub_gdf,
-        style_callback=style_callback,
+    geo_layer = ipyleaflet.GeoJSON(
+        data=geojson_dict,
         hover_style=hover_style,
         name=f"Capa {vista}",
     )
 
-    # Actualización interactiva del Info Box en hover
+    # Actualización interactiva del Info Box en hover con deduplicación por ID territorial
+    last_hovered_id = [None]
+
     def on_feature_hover(event=None, feature=None, **kwargs):
         if not feature or "properties" not in feature:
             return
 
         p = feature["properties"]
+        feat_id = p.get(join_key)
+        if feat_id is not None and feat_id == last_hovered_id[0]:
+            return
+        last_hovered_id[0] = feat_id
+
         nombre = p.get("nom_mpio") or p.get("dpto") or "Territorio"
         depto = p.get("dpto", "")
         score_val = p.get(score_col, 0.0)
