@@ -1,0 +1,93 @@
+/**
+ * Base & Reset Styles — Atlas Territorial LA/FT
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--atlas-bg-main);
+  color: var(--atlas-text-main);
+  font-family: var(--atlas-font-sans);
+  font-size: 14.5px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Accessible focus visible outlines */
+:focus-visible {
+  outline: 2px solid var(--atlas-blue-interactive) !important;
+  outline-offset: 2px !important;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Typographic Defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--atlas-font-display);
+  color: var(--atlas-blue-deep);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 0;
+}
+
+p {
+  color: var(--atlas-text-secondary);
+  margin-top: 0;
+  margin-bottom: 0.85rem;
+}
+
+small {
+  font-size: 0.82rem;
+  color: var(--atlas-text-muted);
+}
+
+strong, b {
+  color: var(--atlas-text-main);
+  font-weight: 600;
+}
+
+a {
+  color: var(--atlas-blue-interactive);
+  text-decoration: none;
+  transition: color var(--atlas-transition-fast);
+}
+
+a:hover {
+  color: var(--atlas-blue-interactive-hover);
+  text-decoration: underline;
+}
+
+/* Clean Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--atlas-surface-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--atlas-border-strong);
+  border-radius: var(--atlas-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--atlas-text-muted);
+}

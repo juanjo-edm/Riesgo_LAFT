@@ -1,92 +1,147 @@
 """
-Componentes de interfaz reutilizables para Shiny: tarjetas de métricas, badges y avisos.
+Componentes de interfaz reutilizables para Shiny: tarjetas KPI, badges, notas y estados vacíos.
+Diseño orientado a Geospatial Intelligence y accesibilidad WCAG 2.2 AA.
 """
 
+from typing import Optional
 from shiny import ui
 from src.config import INTENSIDAD_PALETTE
 
 
-def risk_badge(level: str) -> ui.Tag:
-    """Renderiza un badge de nivel de riesgo con su color respectivo."""
-    bg_color = INTENSIDAD_PALETTE.get(level, "#64748b")
-    text_color = "#0f172a" if level in ["Medio", "Bajo"] else "#ffffff"
+def risk_badge(level: str, count: Optional[int] = None) -> ui.Tag:
+    """
+    Renderiza un badge discreto de nivel de riesgo con su dot semántico y alto contraste.
+    """
+    level_class_map = {
+        "Bajo": "bajo",
+        "Medio": "medio",
+        "Alto": "alto",
+        "Muy alto": "muy-alto",
+    }
+    css_class = level_class_map.get(level, "bajo")
+    count_str = f" ({count:,})".replace(",", ".") if count is not None else ""
 
     return ui.tags.span(
-        level,
-        style=f"""
-            display: inline-block;
-            background-color: {bg_color};
-            color: {text_color};
-            font-weight: 600;
-            font-size: 0.85rem;
-            padding: 3px 10px;
-            border-radius: 9999px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        """,
+        ui.tags.span(class_="atlas-risk-dot"),
+        ui.tags.span(f"{level}{count_str}"),
+        class_=f"atlas-risk-badge {css_class}",
     )
 
 
-def metric_card(title: str, value: str, subtitle: str | None = None, border_color: str = "#312e81") -> ui.Tag:
-    """Renderiza una tarjeta de resumen métrico estilizada con diseño moderno."""
+def kpi_card(
+    title: str,
+    value: str,
+    subtitle: Optional[str] = None,
+    unit: Optional[str] = None,
+    indicator_color: Optional[str] = None,
+) -> ui.Tag:
+    """
+    Renderiza una tarjeta KPI con superficie neutra, tipografía protagonista y contexto conciso.
+    Cumple con las directrices de diseño analítico (Sección 8).
+    """
+    indicator_style = f"background-color: {indicator_color};" if indicator_color else ""
+
+    header_children = [ui.tags.span(title, class_="atlas-kpi-title")]
+    if indicator_color:
+        header_children.append(ui.tags.span(class_="atlas-kpi-indicator", style=indicator_style))
+
+    value_children = [ui.tags.span(value, class_="atlas-kpi-value")]
+    if unit:
+        value_children.append(ui.tags.span(unit, class_="atlas-kpi-unit"))
+
+    body_children = [
+        ui.tags.div(*header_children, class_="atlas-kpi-header"),
+        ui.tags.div(*value_children, class_="atlas-kpi-value-row"),
+    ]
+
+    if subtitle:
+        body_children.append(ui.tags.p(subtitle, class_="atlas-kpi-subtitle"))
+
+    return ui.tags.div(*body_children, class_="atlas-kpi-card")
+
+
+def metric_card(
+    title: str,
+    value: str,
+    subtitle: Optional[str] = None,
+    border_color: str = "#315EEA",
+) -> ui.Tag:
+    """
+    Tarjeta de resumen métrico con borde de acento interactivo para fichas de perfil.
+    """
     children = [
-        ui.tags.span(
-            title,
-            style="display: block; color: #64748b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px;",
-        ),
-        ui.tags.strong(
-            value,
-            style="display: block; color: #0f172a; font-size: 1.45rem; font-weight: 800; line-height: 1.2;",
+        ui.tags.span(title, class_="atlas-kpi-title"),
+        ui.tags.div(
+            ui.tags.span(value, class_="atlas-kpi-value"),
+            class_="atlas-kpi-value-row",
         ),
     ]
     if subtitle:
-        children.append(
-            ui.tags.small(
-                subtitle,
-                style="display: block; color: #94a3b8; font-size: 0.78rem; margin-top: 4px; font-weight: 500;",
-            )
-        )
+        children.append(ui.tags.p(subtitle, class_="atlas-kpi-subtitle"))
 
     return ui.tags.div(
         *children,
-        style=f"""
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid {border_color};
-            border-radius: 10px;
-            padding: 14px 18px;
-            box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        """,
+        class_="atlas-kpi-card",
+        style=f"border-left: 3px solid {border_color};",
     )
 
 
-def empty_state(message: str) -> ui.Tag:
-    """Mensaje para estados sin selección o sin datos."""
+def empty_state(message: str, instruction: Optional[str] = None) -> ui.Tag:
+    """Renderiza un estado vacío instructivo y accesible."""
+    children = [
+        ui.tags.div("🗺️", class_="atlas-empty-state-icon"),
+        ui.tags.p(message, class_="atlas-empty-state-text"),
+    ]
+    if instruction:
+        children.append(
+            ui.tags.small(instruction, style="display: block; margin-top: 6px; color: var(--atlas-text-muted);")
+        )
+
+    return ui.tags.div(*children, class_="atlas-empty-state")
+
+
+def method_note(text: str, title: str = "Nota metodológica") -> ui.Tag:
+    """Caja informativa limpia para notas de referencia técnica o metodológica."""
     return ui.tags.div(
-        ui.tags.p(message, style="margin: 0; font-size: 0.95rem; color: #64748b; font-weight: 500; max-width: 450px; margin: 0 auto;"),
-        style="""
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 32px 20px;
-            text-align: center;
-            margin: 16px 0;
-        """,
+        ui.tags.div(title, class_="atlas-method-card-title"),
+        ui.tags.p(text, class_="atlas-method-card-text"),
+        class_="atlas-method-card",
     )
 
 
-def method_note(text: str) -> ui.Tag:
-    """Caja informativa para notas metodológicas."""
-    return ui.tags.div(
-        ui.tags.div("Nota metodológica", style="font-weight: 700; color: #312e81; margin-bottom: 4px; font-size: 0.85rem; letter-spacing: 0.3px;"),
-        ui.tags.div(text, style="font-size: 0.88rem; color: #334155; line-height: 1.5;"),
-        style="""
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #4338ca;
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
-        """,
-    )
+def scenario_badge(
+    recalculated: bool,
+    label: str,
+    active_count: int = 0,
+) -> ui.Tag:
+    """
+    Muestra el estado del índice: General (oficial) vs Recalculado (personalizado con CRITIC).
+    """
+    if recalculated:
+        return ui.tags.div(
+            ui.tags.div(
+                ui.tags.span("⚡", style="font-size: 0.85rem;"),
+                ui.tags.span("Escenario Personalizado (CRITIC)"),
+                class_="atlas-scenario-title",
+                style="color: #92400E;",
+            ),
+            ui.tags.p(
+                f"{label} • {active_count} factor(es) activo(s) con reclasificación K-Means dinámica.",
+                class_="atlas-scenario-desc",
+            ),
+            class_="atlas-scenario-card recalculated",
+        )
+    else:
+        return ui.tags.div(
+            ui.tags.div(
+                ui.tags.span("🏛️", style="font-size: 0.85rem;"),
+                ui.tags.span("Índice Territorial General"),
+                class_="atlas-scenario-title",
+                style="color: var(--atlas-blue-interactive);",
+            ),
+            ui.tags.p(
+                "Ponderación multivariada global consolidada sobre las 13 dimensiones de riesgo.",
+                class_="atlas-scenario-desc",
+            ),
+            class_="atlas-scenario-card general",
+        )

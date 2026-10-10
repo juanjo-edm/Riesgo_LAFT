@@ -53,8 +53,8 @@ Lógica reactiva para el recálculo dinámico de índices territoriales:
 
 ### 4. `data_loader.py`
 Servicio de acceso a datos de alto rendimiento:
-- Lee los archivos `.parquet` de `data/processed/` en microsegundos gracias a PyArrow.
-- Carga las geometrías simplificadas desde `data/geodata/mapa_municipios.parquet` y `mapa_departamentos.parquet`, logrando una inicialización prácticamente instantánea en comparación con archivos GeoJSON o RDS pesados.
+- Lee los archivos `.parquet` de `Data/processed/` en microsegundos gracias a PyArrow.
+- Carga las geometrías simplificadas desde `Data/geodata/mapa_municipios.parquet` y `mapa_departamentos.parquet`, logrando una inicialización prácticamente instantánea en comparación con archivos GeoJSON o RDS pesados.
 - Implementa un patrón de caché singleton en memoria para evitar lecturas de disco innecesarias durante la sesión de usuario.
 
 ### 5. `prepare_data.py` (ETL)
@@ -65,14 +65,22 @@ Script que transforma el libro público consolidado `Output/atlas_territorial_pu
 
 ---
 
-## 🎨 Componentes Visuales
+## 🎨 Componentes Visuales y Sistema de Diseño
 
 - **`src/components/cards.py`:**
-  - `metric_card(title, value, subtitle)`: Tarjeta estilizada con borde de acento e indicadores tipográficos claros.
-  - `risk_badge(level)`: Pastilla de color con texto de alto contraste según el nivel de riesgo.
-  - `empty_state(message)`: Mensaje visual cuando no hay un elemento seleccionado.
-  - `method_note(text)`: Caja de texto informativa para notas metodológicas.
+  - `kpi_card(title, value, subtitle, unit, indicator_color)`: Tarjeta KPI neutral de alta jerarquía con números tabulares y contexto censal DANE 2018.
+  - `risk_badge(level, count)`: Pastilla semántica con dot indicador y contraste WCAG 2.2 AA según el nivel de riesgo (`Bajo`, `Medio`, `Alto`, `Muy alto`).
+  - `scenario_badge(recalculated, label, active_count)`: Indicador contextual reactivo que diferencia el Índice Territorial General de un escenario recalculado por CRITIC.
+  - `metric_card(title, value, subtitle, border_color)`: Tarjeta de resumen métrico con acento para fichas de diagnóstico territorial.
+  - `empty_state(message, instruction)`: Mensaje visual instructivo y accesible ante ausencia de selección.
+  - `method_note(text, title)`: Caja de notas metodológicas y advertencias analíticas con borde interactivo.
 - **`src/visualizations/map_builder.py`:**
-  - `build_ipyleaflet_map(...)`: Genera un mapa interactivo ipyleaflet nativo con aceleración por hardware Canvas (`prefer_canvas=True`), capa GeoJSON con estilos precomputados vectoriales sin sobrecosto de memoria, Info Box interactivo en tiempo real con WidgetControl, controles de pantalla completa, escala y leyenda fija.
+  - `build_ipyleaflet_map(...)`: Inicializa el explorador cartográfico `ipyleaflet.Map` con capa base neutra `Esri.WorldGrayCanvas`, controles (`ScaleControl`, `FullScreenControl`, `LegendControl`) y callbacks de hover/clic con control de generación (`_atlas_generation`) para descartar eventos en tránsito.
+  - `update_ipyleaflet_map(...)`: Actualiza in-situ los datos y estilos de la capa `GeoJSON` sin recrear el widget, preservando el viewport manual cuando solo cambian puntajes.
+  - `prepare_geojson_data(...)`: Cruza geometrías y datos, preserva sin simplificar el polígono seleccionado, aplica sombreado exclusivo al territorio enfocado (`fillOpacity: 0.88`, borde `#315EEA`) y deja los vecinos con relleno transparente para mantener el contexto geográfico.
+  - `padded_bounds(...)`, `viewport_for_bounds(...)`, `frame_map(...)`, `viewport_has_arrived(...)`: Motor de encuadre Web Mercator con margen del 10% por lado y confirmación del viewport real en el cliente.
+  - `format_feature_info_html(...)` y `format_initial_info_box()`: Generadores HTML para el Info Box flotante (modo inspección por cursor y modo `📍 Selección fijada`).
 - **`src/visualizations/radar.py`:**
-  - `create_radar_chart(...)`: Construye el gráfico de telaraña (*spider chart*) en Plotly comparando las 13 dimensiones de un territorio contra el promedio nacional.
+  - `create_radar_chart(...)`: Construye el gráfico radial (*spider chart*) interactivo en Plotly comparando las 13 dimensiones del territorio frente a la media nacional.
+  - `create_dimensions_bar_chart(...)`: Construye el gráfico de barras horizontales ordenadas para comparar de manera directa la vulnerabilidad por dimensión frente al referente nacional.
+  - `empty_radar_figure(...)`: Estado visual elegante cuando no hay territorio activo.

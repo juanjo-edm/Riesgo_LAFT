@@ -384,6 +384,8 @@ pygments==2.21.0
     #   ipython-pygments-lexers
     #   jupyter-console
     #   nbconvert
+pyhere==1.0.3
+    # via atlas-territorial-laft (pyproject.toml)
 pyjwt==2.15.1
     # via rsconnect-python
 pyogrio==0.13.0

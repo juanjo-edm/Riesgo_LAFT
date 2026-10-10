@@ -1,0 +1,75 @@
+/**
+ * Design Tokens — Atlas Territorial de Riesgo LA/FT
+ * Geospatial Intelligence Visual Identity
+ */
+
+:root {
+  /* Brand Core Palette */
+  --atlas-blue-deep: #14243A;
+  --atlas-blue-navy: #0F1D30;
+  --atlas-blue-interactive: #315EEA;
+  --atlas-blue-interactive-hover: #2349BF;
+  --atlas-blue-subtle: #EEF3FF;
+  --atlas-blue-glow: rgba(49, 94, 234, 0.15);
+
+  /* Backgrounds & Surfaces */
+  --atlas-bg-main: #F5F7FB;
+  --atlas-surface: #FFFFFF;
+  --atlas-surface-subtle: #F8FAFC;
+  --atlas-surface-hover: #F1F5F9;
+
+  /* Typography Colors */
+  --atlas-text-main: #17253B;
+  --atlas-text-secondary: #64748B;
+  --atlas-text-muted: #94A3B8;
+  --atlas-text-inverse: #FFFFFF;
+
+  /* Borders & Dividers */
+  --atlas-border: #E2E8F0;
+  --atlas-border-subtle: #F1F5F9;
+  --atlas-border-strong: #CBD5E1;
+  --atlas-border-focus: #315EEA;
+
+  /* Semantic Risk Scale (4 levels - consistent with analytical engine) */
+  --risk-bajo: #8BC34A;
+  --risk-bajo-bg: rgba(139, 195, 74, 0.15);
+  --risk-bajo-border: rgba(139, 195, 74, 0.4);
+  --risk-bajo-text: #2E5813;
+
+  --risk-medio: #F2C94C;
+  --risk-medio-bg: rgba(242, 201, 76, 0.18);
+  --risk-medio-border: rgba(242, 201, 76, 0.5);
+  --risk-medio-text: #694A00;
+
+  --risk-alto: #F2994A;
+  --risk-alto-bg: rgba(242, 153, 74, 0.16);
+  --risk-alto-border: rgba(242, 153, 74, 0.45);
+  --risk-alto-text: #833900;
+
+  --risk-muy-alto: #D7191C;
+  --risk-muy-alto-bg: rgba(215, 25, 28, 0.14);
+  --risk-muy-alto-border: rgba(215, 25, 28, 0.45);
+  --risk-muy-alto-text: #8E0A0C;
+
+  /* Typography Stack */
+  --atlas-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --atlas-font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --atlas-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Shadows */
+  --atlas-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --atlas-shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.05);
+  --atlas-shadow-md: 0 4px 8px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --atlas-shadow-lg: 0 10px 18px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+  --atlas-shadow-float: 0 20px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+
+  /* Radii */
+  --atlas-radius-sm: 6px;
+  --atlas-radius-md: 10px;
+  --atlas-radius-lg: 14px;
+  --atlas-radius-full: 9999px;
+
+  /* Transitions */
+  --atlas-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --atlas-transition-normal: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}

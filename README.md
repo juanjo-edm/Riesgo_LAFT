@@ -12,9 +12,14 @@ Siguiendo las mejores prácticas de desarrollo en Python:
 
 ```text
 ├── app.py                      # Entrada principal de la aplicación Shiny for Python
+├── _brand.yml                  # Tokens de identidad visual y configuración de tema
 ├── manifest.json               # Manifiesto de despliegue para Posit Connect / Posit Cloud
 ├── pyproject.toml              # Definición de dependencias y configuración de uv (PEP 621)
 ├── requirements.txt            # Dependencias fijadas para despliegue universal
+├── .here                       # Marcador de raíz del proyecto para rutas portables (pyprojroot)
+├── www/                        # Recursos estáticos servidos por Shiny
+│   ├── metodologia.html        # Copia pública del cuaderno metodológico compilado
+│   └── styles/                 # Hojas de estilo CSS modulares (tokens, base, layout, map, etc.)
 ├── src/                        # Código fuente modular de la aplicación ([Ver Documentación](src/README.md))
 │   ├── config.py               # Constantes, paletas y definiciones de dimensiones
 │   ├── data_loader.py          # Carga y caché de datos Parquet y geometrías
@@ -23,14 +28,20 @@ Siguiendo las mejores prácticas de desarrollo en Python:
 │   ├── prepare_data.py         # Pipeline ETL de conversión Excel -> Parquet/Geodata
 │   ├── components/             # Componentes reutilizables de UI (cards, badges)
 │   ├── modules/                # Módulos Shiny ([Ver Documentación](src/modules/README.md))
-│   └── visualizations/         # Generadores de mapas ipyleaflet y gráficos Plotly
+│   └── visualizations/         # Constructores de mapas ipyleaflet y gráficos Plotly
+├── tests/                      # Suite de pruebas automatizadas con pytest
+│   ├── test_analytical_baseline.py # Regresión estadística CRITIC, K-Means y agregación
+│   ├── test_app_structure.py   # Integridad de módulos UI/Server y sistema de diseño
+│   └── test_map_focus.py       # Pruebas de encuadre Web Mercator, estilos y sincronización
+├── Scripts/                    # Automatización E2E y scripts de procesamiento
+│   └── verify_app_ui.py        # Verificación visual y funcional multiplataforma (Playwright)
 ├── notebook_methodology/       # Cuaderno metodológico en Quarto ([Ver Documentación](notebook_methodology/README.md))
 │   ├── data/                   # Insumos primarios del cuaderno
 │   ├── images/                 # Gráficos y esquemas
-│   ├── metodologia.qmd         # Cuaderno Quarto con motor Python (Jupyter)
+│   ├── metodologia.qmd         # Cuaderno Quarto con motor Python (Jupyter + API SoQL)
 │   ├── metodologia.html        # Cuaderno compilado interactivo auto-contenido
 │   └── _quarto.yml             # Configuración del documento Quarto
-├── data/
+├── Data/
 │   ├── raw/                    # Libros Excel y fuentes originales
 │   ├── processed/              # Tablas de alta velocidad en formato Parquet
 │   └── geodata/                # Capas geoespaciales simplificadas (GeoParquet / GeoJSON)
@@ -61,12 +72,33 @@ uv run shiny run app.py --reload
 
 La app estará disponible en `http://127.0.0.1:8000`.
 
-### Funcionalidades de la Aplicación:
-- **🗺️ Mapa Territorial:** Coropleta vectorial reactiva con **ipyleaflet** que colorea los 1.121 municipios o los 33 departamentos según el nivel de riesgo activo, con Info Box interactivo en tiempo real al pasar el cursor, control de escala, controles de pantalla completa y zoom contextual.
-- **📊 Rankings:** Tablas interactivas con ordenamiento, filtrado multifactorial, resumen de distribución y exportación a formato CSV.
-- **🏛️ Perfil Municipal:** Ficha técnica por municipio con gráfico de telaraña (*spider/radar chart*) interactivo en **Plotly** frente al promedio nacional y tabla detallada de dimensiones.
-- **🇨🇴 Perfil Departamental:** Agregación de dimensiones ponderadas por población municipal y diagnóstico departamental.
-- **🔄 Recálculo Reactivo en Tiempo Real:** Permite aislar dimensiones específicas o fuentes internas (por ejemplo, analizar únicamente *Cultivos ilícitos* dentro de *Narcotráfico*), reclasificando los niveles de intensidad al vuelo.
+### Funcionalidades y Sistema de Diseño (Geospatial Intelligence UI/UX):
+- **🎨 Sistema de Diseño y Tokens (`_brand.yml` & `www/styles/`):** Paleta profesional en tonos azul profundo institucional (`#14243A`), azul interactivo (`#315EEA`), fondo neutro (`#F5F7FB`), tipografía Inter / Plus Jakarta Sans y tokens centralizados en CSS. Escala semántica de riesgo accesible (WCAG 2.2 AA).
+- **🧭 Encabezado Compacto y Modal Metodológico:** Barra superior optimizada que maximiza el área de trabajo cartográfico, incorpora indicadores en tiempo real del motor activo y modal directo con resumen del pipeline y acceso al informe completo Quarto HTML.
+- **🗺️ Explorador Cartográfico con Enfoque Inteligente:** Mapa coroplético en **ipyleaflet** sobre lienzo base neutro (`Esri World Gray Canvas`) con actualización in-situ de capas (`update_ipyleaflet_map`). Al seleccionar un municipio o departamento (por buscador o clic en el mapa), encuadra automáticamente el territorio en proyección Web Mercator con margen del 10%, resalta exclusivamente el polígono activo (`fillOpacity: 0.88`, borde `#315EEA`) y mantiene los vecinos con relleno transparente para conservar el contexto geográfico y consultarlos con el cursor. Incluye Info Box flotante reactiva, aviso ante geometrías faltantes y drawer territorial inferior.
+- **📊 Tarjetas KPI Neutrales:** Indicadores clave de desempeño estructurados sobre superficies limpias, con tipografía protagonista en cifras tabulares, subtítulos contextuales y referencia explícita al Censo DANE 2018.
+- **⚙️ Panel de Filtros y Búsqueda Predictiva:** Selectores `selectize` con búsqueda instantánea por texto en Departamento y Municipio, sincronizados bidireccionalmente con el mapa. Incluye acordeones colapsables para dimensiones CRITIC, indicadores específicos dependientes, niveles de intensidad y tarjeta reactiva de escenario (*Índice Global Consolidado* vs *Recálculo Personalizado CRITIC*).
+- **📋 Rankings Jerárquicos y Exportación:** DataGrid interactivo con ordenamiento multicriterio, paginación, filtros por columna, badges semánticos discretos, códigos DIVIPOLA preservados con ceros a la izquierda y descarga a CSV (UTF-8 con BOM para Excel).
+- **🏛️ Perfiles Territorial y Departamental:** Fichas técnicas completas organizadas en 5 secciones de diagnóstico, con selector de vista comparativa entre **gráfico radial (spider chart)** y **gráfico de barras horizontales ordenadas** frente al promedio nacional, además de desglose tabular de dimensiones estandarizadas.
+
+---
+
+## 🧪 Validación y Pruebas Automatizadas
+
+El proyecto incluye suites de pruebas unitarias y de extremo a extremo (E2E) para garantizar la integridad estadística, el encuadre cartográfico y la estabilidad de la interfaz:
+
+```bash
+# 1. Ejecutar pruebas unitarias de regresión estadística, UI y enfoque cartográfico (100% pass)
+uv run pytest
+
+# 2. Ejecutar verificación visual e interacción multiplataforma con Playwright
+uv run python Scripts/verify_app_ui.py
+```
+
+- **`tests/test_analytical_baseline.py`:** Verifica ponderaciones CRITIC, clustering K-Means ($k=4$) y agregación departamental ponderada por población.
+- **`tests/test_app_structure.py`:** Valida la arquitectura modular UI/Server, activos estáticos y hojas de estilo CSS.
+- **`tests/test_map_focus.py`:** Verifica el sombreado exclusivo del territorio seleccionado, cálculo de límites con margen del 10%, encuadre Web Mercator adaptable a escritorio/móvil y sincronización de eventos en `ipyleaflet`.
+- **`Scripts/verify_app_ui.py`:** Ejecuta pruebas E2E en navegador real (1440×900 escritorio y 390×844 móvil) y genera capturas de verificación en `Output/playwright/territorial_filters/`.
 
 ---
 
@@ -81,24 +113,25 @@ El repositorio está configurado y optimizado para conectarse de manera directa 
 
 2. **Despliegue Continuo (Git-backed en Posit Connect):**
    - El archivo `manifest.json` en la raíz define el entorno (`python-shiny`, entrypoint `app.py`, Python 3.11/pip), permitiendo que Posit Connect compile y actualice la aplicación automáticamente cada vez que se realice un `push` a la rama `main`.
-   - Para regenerar el manifiesto en el futuro tras añadir librerías:
+   - Para regenerar el manifiesto tras añadir librerías o activos:
      ```bash
-     uv run rsconnect write-manifest shiny . --overwrite -x "Data/PERSONAS_DEMOGRAFICO_Cuadros_CNPV_2018.xlsx" -x "notebook_methodology/.quarto/*" -x "*.pyc" -x ".DS_Store" -x ".Rhistory"
+     uv run rsconnect write-manifest shiny . --overwrite -x "Data/PERSONAS_DEMOGRAFICO_Cuadros_CNPV_2018.xlsx" -x "notebook_methodology/.quarto/*" -x "Output/playwright/*" -x "Output/screenshots/*" -x "*.pyc" -x ".DS_Store" -x ".Rhistory"
      ```
 
 ---
 
 ## 📖 Cuaderno Metodológico (Quarto)
 
-El cuaderno técnico se encuentra en `notebook_methodology/metodologia.qmd`. Integra la fundamentación jurídica (Código Penal art. 323, SARLAFT, GAFI), la justificación teórica y la ejecución en código Python de todo el pipeline.
+El cuaderno técnico se encuentra en `notebook_methodology/metodologia.qmd`. Integra la fundamentación jurídica (Código Penal art. 323, SARLAFT, GAFI), extracción reproducible desde la API Socrata (`SoQL` con cobertura municipal completa), justificación matemática y ejecución en Python de todo el pipeline con rutas portables vía `pyprojroot`.
 
 Para compilarlo a HTML interactivo:
 
 ```bash
 quarto render notebook_methodology/metodologia.qmd
+cp notebook_methodology/metodologia.html www/metodologia.html
 ```
 
-El reporte compilado se genera en `notebook_methodology/metodologia.html`.
+El reporte compilado se genera en `notebook_methodology/metodologia.html` y se sirve en la aplicación desde `www/metodologia.html`.
 
 ---
 
@@ -110,7 +143,7 @@ Si se actualiza el archivo maestro `Output/atlas_territorial_publico.xlsx`:
 uv run python src/prepare_data.py
 ```
 
-Este script regenera los archivos optimizados `.parquet` en `data/processed/`.
+Este script regenera los archivos optimizados `.parquet` en `Data/processed/`.
 
 ---
 

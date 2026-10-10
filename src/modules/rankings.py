@@ -1,5 +1,6 @@
 """
-Módulo de Rankings y Tablas de Posición para Shiny for Python.
+Módulo de Rankings y Tablas Clasificatorias para Shiny for Python.
+Diseño moderno con DataGrid interactivo, distribución de riesgo por niveles y exportación CSV.
 """
 
 from typing import Any, Dict
@@ -7,29 +8,45 @@ import io
 import pandas as pd
 from shiny import module, reactive, render, ui
 
+from src.components.cards import kpi_card, method_note, risk_badge
 from src.config import INTENSIDAD_LEVELS, INTENSIDAD_PALETTE
-from src.components.cards import method_note
 
 
 @module.ui
 def rankings_ui():
     return ui.TagList(
+        # Nota explicativa
         ui.output_ui("scale_note"),
+
+        # Distribución de territorios por nivel de riesgo
         ui.output_ui("summary_cards"),
+
+        # Tarjeta principal con tabla clasificatoria
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Clasificación General del Riesgo Territorial", style="font-weight: 700; color: #1e1b4b; font-size: 0.95rem;"),
+                    ui.div(
+                        ui.h4(
+                            "Clasificación General del Riesgo Territorial",
+                            style="font-size: 0.98rem; font-weight: 700; color: var(--atlas-blue-deep); margin: 0;",
+                        ),
+                        ui.p(
+                            "Ordenamiento jerárquico descendente según el índice territorial activo",
+                            style="font-size: 0.78rem; color: var(--atlas-text-secondary); margin: 2px 0 0 0;",
+                        ),
+                    ),
                     ui.download_button(
                         "download_csv",
-                        "Descargar CSV",
+                        "Exportar CSV (Excel UTF-8)",
                         class_="btn btn-sm btn-outline-primary",
+                        style="font-weight: 600; font-size: 0.8rem; border-radius: var(--atlas-radius-sm); padding: 5px 12px;",
                     ),
                     class_="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2",
                 ),
             ),
             ui.output_data_frame("tabla_ranking"),
             full_screen=True,
+            min_height="520px",
         ),
     )
 
@@ -40,8 +57,11 @@ def rankings_server(input, output, session, filtered_data: reactive.Calc):
     @render.ui
     def scale_note():
         return method_note(
-            "Los colores clasifican la intensidad mediante K-Means ordenado en 4 niveles (Bajo, Medio, Alto, Muy alto). "
-            "El ranking se ordena descendentemente según el índice territorial activo."
+            "Los niveles de intensidad (Bajo, Medio, Alto, Muy alto) se determinan mediante agrupamiento "
+            "K-Means (k=4) ordenado estrictamente por la magnitud de sus centroides. "
+            "El ranking clasifica los territorios de mayor a menor vulnerabilidad relativa "
+            "según el escenario activo de ponderación.",
+            title="Metodología de Clasificación y Jerarquía",
         )
 
     @output
@@ -52,30 +72,27 @@ def rankings_server(input, output, session, filtered_data: reactive.Calc):
         df = fd["municipios"] if vista == "Municipios" else fd["departamentos"]
 
         counts = df["riesgo_activo"].value_counts().to_dict()
+        total_len = len(df)
 
         cards = []
         for level in INTENSIDAD_LEVELS:
             count = counts.get(level, 0)
-            color = INTENSIDAD_PALETTE.get(level, "#64748b")
-            card = ui.tags.div(
-                ui.tags.span(level, style="display: block; color: #64748b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"),
-                ui.tags.strong(f"{count:,}".replace(",", "."), style="display: block; color: #0f172a; font-size: 1.45rem; font-weight: 800; margin-top: 2px;"),
-                style=f"""
-                    background: #ffffff;
-                    border: 1px solid #e2e8f0;
-                    border-top: 4px solid {color};
-                    border-radius: 10px;
-                    padding: 12px 16px;
-                    flex: 1;
-                    min-width: 130px;
-                    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
-                """,
+            pct = (count / total_len * 100) if total_len > 0 else 0
+            color = INTENSIDAD_PALETTE.get(level, "#315EEA")
+
+            card = kpi_card(
+                title=f"Nivel {level}",
+                value=f"{count:,}".replace(",", "."),
+                unit="territorios",
+                subtitle=f"{pct:.1f}% del universo visible",
+                indicator_color=color,
             )
             cards.append(card)
 
         return ui.tags.div(
             *cards,
-            style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;",
+            class_="atlas-kpi-grid",
+            style="margin-bottom: 16px;",
         )
 
     @reactive.calc
@@ -87,33 +104,37 @@ def rankings_server(input, output, session, filtered_data: reactive.Calc):
             df = fd["departamentos"].sort_values("score_activo", ascending=False).reset_index(drop=True)
             df["Ranking"] = range(1, len(df) + 1)
             display_df = df[
-                ["Ranking", "dpto", "riesgo_activo", "score_activo", "municipios_total", "poblacion_total_depto"]
+                ["Ranking", "cod_dpto", "dpto", "riesgo_activo", "score_activo", "municipios_total", "poblacion_total_depto"]
             ].rename(
                 columns={
+                    "cod_dpto": "DIVIPOLA",
                     "dpto": "Departamento",
-                    "riesgo_activo": "Intensidad",
-                    "score_activo": "Índice",
+                    "riesgo_activo": "Nivel de Riesgo",
+                    "score_activo": "Índice Activo",
                     "municipios_total": "Municipios",
-                    "poblacion_total_depto": "Población",
+                    "poblacion_total_depto": "Población (DANE 2018)",
                 }
             )
         else:
             df = fd["municipios"].sort_values("score_activo", ascending=False).reset_index(drop=True)
             df["Ranking"] = range(1, len(df) + 1)
             display_df = df[
-                ["Ranking", "nom_mpio", "dpto", "riesgo_activo", "score_activo", "poblacion_total"]
+                ["Ranking", "cod_mpio", "nom_mpio", "dpto", "riesgo_activo", "score_activo", "poblacion_total"]
             ].rename(
                 columns={
+                    "cod_mpio": "DIVIPOLA",
                     "nom_mpio": "Municipio",
                     "dpto": "Departamento",
-                    "riesgo_activo": "Intensidad",
-                    "score_activo": "Índice",
-                    "poblacion_total": "Población",
+                    "riesgo_activo": "Nivel de Riesgo",
+                    "score_activo": "Índice Activo",
+                    "poblacion_total": "Población (DANE 2018)",
                 }
             )
 
-        display_df["Índice"] = display_df["Índice"].round(2)
-        display_df["Población"] = display_df["Población"].apply(lambda x: f"{int(x):,}".replace(",", "."))
+        display_df["Índice Activo"] = display_df["Índice Activo"].round(2)
+        display_df["Población (DANE 2018)"] = display_df["Población (DANE 2018)"].apply(
+            lambda x: f"{int(x):,}".replace(",", ".") if pd.notnull(x) else "0"
+        )
         return display_df
 
     @output
@@ -126,7 +147,7 @@ def rankings_server(input, output, session, filtered_data: reactive.Calc):
             height="550px",
         )
 
-    @render.download_button(filename="ranking_atlas_territorial.csv")
+    @render.download_button(filename="ranking_atlas_territorial_laft.csv")
     def download_csv():
         buf = io.StringIO()
         processed_table().to_csv(buf, index=False, encoding="utf-8-sig")

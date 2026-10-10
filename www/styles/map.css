@@ -1,0 +1,222 @@
+/**
+ * Map Explorer Styles — Atlas Territorial LA/FT
+ * ipyleaflet custom controls, floating info panel, responsive canvas
+ */
+
+.atlas-map-container,
+.atlas-map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 580px;
+  border-radius: 0 0 var(--atlas-radius-lg) var(--atlas-radius-lg);
+  overflow: hidden;
+}
+
+.atlas-floating-infobox {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 800;
+  pointer-events: auto;
+  transition: opacity var(--atlas-transition-fast);
+}
+
+/* Floating Info Box on Map (topright) */
+.atlas-map-infobox {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--atlas-border);
+  border-radius: var(--atlas-radius-md);
+  box-shadow: var(--atlas-shadow-lg);
+  padding: 12px 16px;
+  min-width: 230px;
+  max-width: 280px;
+  font-family: var(--atlas-font-sans);
+  pointer-events: auto;
+  transition: all var(--atlas-transition-fast);
+}
+
+.atlas-map-infobox-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--atlas-blue-interactive);
+  margin-bottom: 3px;
+}
+
+.atlas-map-infobox-title {
+  font-family: var(--atlas-font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--atlas-blue-deep);
+  line-height: 1.2;
+  margin: 0 0 2px 0;
+}
+
+.atlas-map-infobox-depto {
+  font-size: 0.76rem;
+  color: var(--atlas-text-secondary);
+  margin-bottom: 8px;
+}
+
+.atlas-map-infobox-metrics {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid var(--atlas-border-subtle);
+  border-bottom: 1px solid var(--atlas-border-subtle);
+  margin-bottom: 6px;
+}
+
+.atlas-map-infobox-metric-label {
+  font-size: 0.76rem;
+  color: var(--atlas-text-secondary);
+}
+
+.atlas-map-infobox-metric-val {
+  font-family: var(--atlas-font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--atlas-text-main);
+}
+
+.atlas-map-infobox-footer {
+  font-size: 0.74rem;
+  color: var(--atlas-text-muted);
+}
+
+/* Selected Territory Floating Detail Drawer/Card */
+.atlas-map-selected-drawer {
+  background: var(--atlas-surface);
+  border: 1px solid var(--atlas-border);
+  border-radius: var(--atlas-radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--atlas-shadow-float);
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Map Header Bar */
+.atlas-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.atlas-map-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.atlas-map-title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--atlas-blue-deep);
+  margin: 0;
+}
+
+.atlas-map-legend-hint {
+  font-size: 0.76rem;
+  color: var(--atlas-text-muted);
+}
+
+/* Leaflet Zoom and Control Overrides for Polished UI */
+.leaflet-control-zoom {
+  border: 1px solid var(--atlas-border) !important;
+  box-shadow: var(--atlas-shadow-sm) !important;
+  border-radius: var(--atlas-radius-sm) !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  background-color: var(--atlas-surface) !important;
+  color: var(--atlas-blue-deep) !important;
+  border-bottom: 1px solid var(--atlas-border-subtle) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: var(--atlas-surface-subtle) !important;
+  color: var(--atlas-blue-interactive) !important;
+}
+
+.leaflet-control-scale-line {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid var(--atlas-border-strong) !important;
+  color: var(--atlas-text-main) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  border-radius: 3px !important;
+}
+
+/* Explicit Dimensions & Rendering Assurance for Shiny ipyleaflet */
+#map-territory_map {
+  width: 100% !important;
+  height: 580px !important;
+  min-height: 580px !important;
+  position: relative !important;
+  display: block !important;
+}
+
+#map-territory_map .jupyter-widgets,
+#map-territory_map .leaflet-widgets,
+#map-territory_map .leaflet-container {
+  width: 100% !important;
+  height: 580px !important;
+  min-height: 580px !important;
+  background-color: #E2E8F0 !important;
+}
+
+/* Polished Integrated Legend Styling */
+.leaflet-control-legend,
+.leaflet-control.leaflet-control-legend {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid var(--atlas-border) !important;
+  border-radius: var(--atlas-radius-md) !important;
+  box-shadow: var(--atlas-shadow-md) !important;
+  padding: 8px 12px !important;
+  font-family: var(--atlas-font-sans) !important;
+  line-height: 1.4 !important;
+  margin-bottom: 10px !important;
+  margin-right: 10px !important;
+}
+
+.leaflet-control-legend h4 {
+  font-family: var(--atlas-font-sans) !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: var(--atlas-blue-deep) !important;
+  margin: 0 0 5px 0 !important;
+}
+
+.leaflet-control-legend p {
+  display: inline-block !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  color: var(--atlas-text-secondary) !important;
+  margin: 0 0 0 5px !important;
+  vertical-align: middle !important;
+}
+
+.leaflet-control-legend i {
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 3px !important;
+  vertical-align: middle !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}

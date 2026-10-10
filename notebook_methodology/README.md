@@ -27,16 +27,19 @@ notebook_methodology/
 
 ## 🔄 Flujo de Datos: Cuaderno como Fuente Única de la App
 
-El cuaderno Quarto no es un mero reporte estático: **ejecuta el pipeline analítico completo y exporta los datos en formato Parquet a la aplicación Shiny**:
+El cuaderno Quarto no es un mero reporte estático: **consulta en vivo fuentes abiertas estatales mediante la API Socrata (`SoQL` con `LIMIT 2000` para cobertura municipal completa), ejecuta el pipeline analítico completo y exporta los datos en formato Parquet a la aplicación Shiny** utilizando rutas portables (`pyprojroot.here`):
 
 ```mermaid
 flowchart LR
-    A["notebook_methodology/data/<br/>atlas_territorial_publico.xlsx"] --> B["notebook_methodology/<br/>metodologia.qmd"]
-    B --> C["data/processed/<br/>municipios_total.parquet"]
-    B --> D["data/processed/<br/>departamentos_total.parquet"]
-    B --> E["data/processed/<br/>indicadores_municipales.parquet"]
-    B --> F["data/processed/<br/>catalogo_indicadores.parquet"]
-    C & D & E & F --> G["app.py (Shiny for Python)"]
+    S["API Datos Abiertos Colombia<br/>(Socrata SoQL • LIMIT 2000)"] --> B["notebook_methodology/<br/>metodologia.qmd"]
+    A["notebook_methodology/data/<br/>atlas_territorial_publico.xlsx"] --> B
+    B --> C["Data/processed/<br/>municipios_total.parquet"]
+    B --> D["Data/processed/<br/>departamentos_total.parquet"]
+    B --> E["Data/processed/<br/>indicadores_municipales.parquet"]
+    B --> F["Data/processed/<br/>catalogo_indicadores.parquet"]
+    B --> H["Data/processed/<br/>pesos_objetivos.parquet"]
+    B --> I["Data/processed/<br/>dimensiones_municipales.parquet"]
+    C & D & E & F & H & I --> G["app.py (Shiny for Python)"]
 ```
 
 ---
@@ -57,8 +60,9 @@ uv sync
 ### 2. Comandos Quarto
 
 ```bash
-# Compilar el cuaderno a HTML auto-contenido
+# Compilar el cuaderno a HTML auto-contenido y actualizar la copia pública en www/
 quarto render notebook_methodology/metodologia.qmd
+cp notebook_methodology/metodologia.html www/metodologia.html
 
 # Previsualizar en vivo con recarga automática al editar
 quarto preview notebook_methodology/metodologia.qmd
@@ -73,7 +77,7 @@ El archivo compilado `metodologia.html` se genera con `embed-resources: true` (H
 Para garantizar una lectura fluida, trazabilidad técnica y mantenibilidad, todo el código y la narrativa del cuaderno deben cumplir estrictamente con las siguientes reglas:
 
 ### 1. Parámetros, Librerías y Notación Científica al Inicio
-- **Setup Centralizado:** Todas las importaciones de librerías (`numpy`, `pandas`, `scipy.stats`, `sklearn.cluster.KMeans`), rutas relativas (`Path`), semillas aleatorias (`random_state=123`), cuantiles de winsorización (`cuantiles_winsor = (0.01, 0.99)`), hiperparámetros de K-Means y listas de dimensiones deben definirse exclusivamente en el primer chunk de inicialización.
+- **Setup Centralizado:** Todas las importaciones de librerías (`numpy`, `pandas`, `requests`, `pyprojroot.here`, `scipy.stats`, `sklearn.cluster.KMeans`, `plotnine`), rutas portables ancladas a `.here`, semillas aleatorias (`random_state=123`), cuantiles de winsorización (`cuantiles_winsor = (0.01, 0.99)`), hiperparámetros de K-Means y listas de dimensiones deben definirse exclusivamente en el primer chunk de inicialización.
 - **Desactivación de Notación Científica:** Debe configurarse explícitamente el formateo numérico de Pandas y NumPy para evitar representaciones en exponente (`1.25e+02`), garantizando visualización legible de tasas y conteos:
   ```python
   pd.set_option("display.float_format", lambda x: f"{x:.4f}")

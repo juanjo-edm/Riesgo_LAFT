@@ -49,5 +49,8 @@ App/data/raw/tabla_puntaje_global.xlsx
 App/rsconnect/
 App/.posit/publish/
 
-# Archivos temporales de visualización
+# Archivos temporales de visualización y pruebas E2E
 www/*.html
+!www/metodologia.html
+Output/playwright/
+Output/screenshots/

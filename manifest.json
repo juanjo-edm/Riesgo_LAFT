@@ -20,19 +20,13 @@
   },
   "files": {
     "requirements.txt": {
-      "checksum": "7bec5bff1981c021ce67c67e72e5701a"
-    },
-    ".Rhistory": {
-      "checksum": "994be9629acaa87371028bf5e8290292"
+      "checksum": "e34249d44ca4955b4fb76349432d8d50"
     },
     ".gitignore": {
-      "checksum": "8368e0c91d810fd87bd6f7f1180f3f47"
+      "checksum": "8901b3cdcf1dd79721e04d31d3147f88"
     },
-    "Data/INCAUTACIO\u0301N ORO Y MERCURIO (1).xlsx": {
-      "checksum": "a9a0e61f2fd013c35af399597f68c6f5"
-    },
-    "Data/PERSONAS_DEMOGRAFICO_Cuadros_CNPV_2018.xlsx": {
-      "checksum": "9ee4d5a70e449b9fafef4edb99355eac"
+    ".here": {
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "Data/geodata/mapa_departamentos.geojson": {
       "checksum": "9c203ba981db95d7e6e2e6d3a6ce5b7a"
@@ -59,7 +53,7 @@
       "checksum": "ea1a133f35ad0c4f7033100811cfb6e9"
     },
     "Data/processed/municipios_total.parquet": {
-      "checksum": "1d137d546f77f60381f4cfc707541243"
+      "checksum": "c1a305edca9fa4b24cb158eca8fb10d0"
     },
     "Data/processed/pesos_objetivos.parquet": {
       "checksum": "a7bc2066ee8b12d48222acaa67230f5e"
@@ -67,23 +61,14 @@
     "Data/raw/atlas_territorial_publico.xlsx": {
       "checksum": "4287cbd3028b4ebcd1c58e4618633673"
     },
-    "Documentacion/Cuadernos/Cuaderno Narcotrafico.Rmd": {
-      "checksum": "cee66dda9728cb6db29a29c3e81f3a23"
-    },
-    "Documentacion/Cuadernos/Cuaderno Terrorismo FT.Rmd": {
-      "checksum": "4cd5bd3d7dbe0a0a90b65bb819077677"
-    },
-    "Documentacion/Cuadernos/Cuaderno Trata y Migrantes.Rmd": {
-      "checksum": "5ce4b3a3db23794961dd34bf833270d2"
-    },
-    "Documentacion/Cuadernos/Cuaderno Violencia y Seguridad Ciudadana.Rmd": {
-      "checksum": "a13d9fccb47b0a67cf50b50a30069eaf"
-    },
     "Documentacion/Fuentes/Descripcion fuentes.xlsx": {
       "checksum": "9aecb2136e3f4a2dc559ed4fffed7a38"
     },
+    "Output/atlas_territorial_publico.xlsx": {
+      "checksum": "4287cbd3028b4ebcd1c58e4618633673"
+    },
     "README.md": {
-      "checksum": "c2de8a102f2978f10806097a929e1e27"
+      "checksum": "985ce8b7b37f9894a4c22d61db4250b0"
     },
     "Scripts/Contrabando/Calculo de tasas.R": {
       "checksum": "1d827ed79fa601ee8c7987e09a1e4a40"
@@ -105,24 +90,6 @@
     },
     "Scripts/Delitos Ambientales/Tabla Delitos Ambientales.R": {
       "checksum": "83053ef1e608b8b56cb7ad2c4cfde541"
-    },
-    "Scripts/Extorsio\u0301n y control territorial/Extorsio\u0301n.R": {
-      "checksum": "2ef899e5ce632530768a8a9248c8bcfb"
-    },
-    "Scripts/Extorsio\u0301n y control territorial/Secuestro.R": {
-      "checksum": "784b399d7110132303566d36fc479efd"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/CAPTURAS POR MINERI\u0301A ILEGAL.R": {
-      "checksum": "c587ceb75ef4df46823ef7408fe05fed"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/IINCAUTACION DE ORO Y MERCURIO.R": {
-      "checksum": "b1b4b9127e345c7847e6caa40fd0a179"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/INCAUTACIONES Y DESTRUCCIONES MAQUINARIA EXPLOTACIO\u0301N ILI\u0301CITA DE MINERALES.R": {
-      "checksum": "7d612c98228aec1a47cd46913de04391"
-    },
-    "Scripts/Mineri\u0301a ilegal y explotacio\u0301n ili\u0301cita/MINAS INTERVENIDAS.R": {
-      "checksum": "4d65b3de8f5424a1961f4c3dd9e85a44"
     },
     "Scripts/Narcotrafico/Cultivos Ilicitos.R": {
       "checksum": "a68f96b9e7e1ff8ce22487918a78dcda"
@@ -154,41 +121,59 @@
     "Scripts/territorial_exports.R": {
       "checksum": "f2c166c096bfa908dae9fa2dcf2c11df"
     },
+    "Scripts/verify_app_ui.py": {
+      "checksum": "bbeeb5df0e1e8d892817bbc6727d4573"
+    },
     "Utils/Funciones.R": {
       "checksum": "82f19b9d62f3e260d891959de51d78b4"
     },
+    "_brand.yml": {
+      "checksum": "eb13af3f6eeb2e022645d9e896cc5747"
+    },
     "app.py": {
-      "checksum": "342a2027532a14d1205ccc23bf299ea6"
+      "checksum": "32f4b50132f8f817e6c079685ee83127"
     },
     "images/clipboard-1721304052.png": {
       "checksum": "a69c69ec7180c7df5290ccde7e974966"
     },
+    "notebook_methodology/.gitignore": {
+      "checksum": "06d306ff933a023ca365a9fbf6589381"
+    },
+    "notebook_methodology/README.md": {
+      "checksum": "ba2b64c6512d8b985cad4e5e4fe2d5ba"
+    },
+    "notebook_methodology/_quarto.yml": {
+      "checksum": "411b2448b874d2f9051ba214affba943"
+    },
+    "notebook_methodology/data/atlas_territorial_publico.xlsx": {
+      "checksum": "4287cbd3028b4ebcd1c58e4618633673"
+    },
+    "notebook_methodology/data/tabla_puntaje_global.xlsx": {
+      "checksum": "8ab3a0bb782e1281ae010a6c32496adf"
+    },
+    "notebook_methodology/images/clipboard-1721304052.png": {
+      "checksum": "a69c69ec7180c7df5290ccde7e974966"
+    },
+    "notebook_methodology/metodologia.html": {
+      "checksum": "bd879f1ef62e03fee8096dea86c31ff8"
+    },
+    "notebook_methodology/metodologia.qmd": {
+      "checksum": "b3153514ebd94a1ddc31eec168803afd"
+    },
     "pyproject.toml": {
-      "checksum": "57ac2d36c86415fc44c9ad286f123950"
+      "checksum": "6f62bc4ffb1d474c15745133ac0700d5"
     },
     "run.sh": {
       "checksum": "b863e1e7c44241f9d13a89bee3a2e92d"
     },
     "src/README.md": {
-      "checksum": "85fbcf530928151b719f87c4d7012f1e"
-    },
-    "src/__pycache__/calculator.cpython-311.pyc": {
-      "checksum": "40d3fb369262698ab5d87e5221dd5585"
-    },
-    "src/__pycache__/config.cpython-311.pyc": {
-      "checksum": "5506129828738f859067ff4c5741c5c4"
-    },
-    "src/__pycache__/data_loader.cpython-311.pyc": {
-      "checksum": "33b59f6525d77e5ddf04ee8b3e94a68d"
+      "checksum": "7d45c6efbe1b1246967441c1e06d9228"
     },
     "src/calculator.py": {
       "checksum": "866005e5d1a05422744ebc39959d3b7d"
     },
-    "src/components/__pycache__/cards.cpython-311.pyc": {
-      "checksum": "805654b9865bf31475c3c1bf79cfb814"
-    },
     "src/components/cards.py": {
-      "checksum": "bc66b4a3178b65b9e557e019a198a380"
+      "checksum": "40a2f9ee47efb69b44e15fc4647d5f20"
     },
     "src/config.py": {
       "checksum": "e5e03bb3206f49f3ed8ee22d5d0acedd"
@@ -200,55 +185,70 @@
       "checksum": "f7bc02451386e21286581c983aabbf60"
     },
     "src/modules/README.md": {
-      "checksum": "81a8284624043b3e099bce7d0ca14de6"
-    },
-    "src/modules/__pycache__/department_profile.cpython-311.pyc": {
-      "checksum": "cf8a791af7e066b8d07f29242422353d"
-    },
-    "src/modules/__pycache__/filters.cpython-311.pyc": {
-      "checksum": "c3ce968bb4313b0c5f1cae622d07d426"
-    },
-    "src/modules/__pycache__/map.cpython-311.pyc": {
-      "checksum": "a819b00917e9d945d74637c6cecd7576"
-    },
-    "src/modules/__pycache__/profile.cpython-311.pyc": {
-      "checksum": "24f371133bd4feb992350ab3d9e64e0a"
-    },
-    "src/modules/__pycache__/rankings.cpython-311.pyc": {
-      "checksum": "cd5538d8fae11050db3f2034eb1475f5"
+      "checksum": "31f3bf4b175497bb883e254bc2f2f434"
     },
     "src/modules/department_profile.py": {
-      "checksum": "7ffaeb76a1be0491ec36a75381d47671"
+      "checksum": "3623e4b447311d36cff3f6c38c93fa20"
     },
     "src/modules/filters.py": {
-      "checksum": "c8978a076a33b185daa05742896ccb94"
+      "checksum": "6094bf91f27bae7a93140236a0ba3830"
     },
     "src/modules/map.py": {
-      "checksum": "f5427fd58ba3d8500144f297d34de87b"
+      "checksum": "fa5a237e30f4e8fea7b5807fde54aab2"
     },
     "src/modules/profile.py": {
-      "checksum": "206295aef76dfb3900210a304b801902"
+      "checksum": "a00272c2da068feca985bd708244c659"
     },
     "src/modules/rankings.py": {
-      "checksum": "1f222a4856629df36ed9181cf112519a"
+      "checksum": "6cb281565d29dde2af1de7e005415d53"
     },
     "src/prepare_data.py": {
       "checksum": "9cb3dee9a2021f2f49b9b0d47eec0899"
     },
-    "src/visualizations/__pycache__/map_builder.cpython-311.pyc": {
-      "checksum": "6b25e823e8c5870bd8c2112910983c4f"
-    },
-    "src/visualizations/__pycache__/radar.cpython-311.pyc": {
-      "checksum": "cd16b5782a5fb1aed8290c1418940ce9"
-    },
     "src/visualizations/map_builder.py": {
-      "checksum": "8d9d9088b17bc8f2b20722712db0e653"
+      "checksum": "c58a160879481fdcaf327640eb6c440c"
     },
     "src/visualizations/radar.py": {
-      "checksum": "c929c852181b38407549c6fc224dcae5"
+      "checksum": "9f84d71e0c0c3e051f6f8045d9297b49"
+    },
+    "tests/conftest.py": {
+      "checksum": "0abccd3556e1a83f7ead9c8cd12b8649"
+    },
+    "tests/test_analytical_baseline.py": {
+      "checksum": "c9f1297e992d5f4567fd0433371df1d3"
+    },
+    "tests/test_app_structure.py": {
+      "checksum": "d191c1cb2d91db79f6583544280d0bd9"
+    },
+    "tests/test_map_focus.py": {
+      "checksum": "7496b8f301bc8e88b8272388e44a933c"
     },
     "uv.lock": {
-      "checksum": "40403baedfa4396bbd9f07daf84ab1ca"
+      "checksum": "0e118ba0871bbfa36a670732367483b7"
+    },
+    "www/metodologia.html": {
+      "checksum": "bd879f1ef62e03fee8096dea86c31ff8"
+    },
+    "www/styles/base.css": {
+      "checksum": "e9a3355e5ea23a7e3eb5b188b14088d0"
+    },
+    "www/styles/bundle.css": {
+      "checksum": "af3db99e5fac3988e8bb4328a7a638a4"
+    },
+    "www/styles/components.css": {
+      "checksum": "32b4e7943babb45c21f3ed8d2f320dc4"
+    },
+    "www/styles/layout.css": {
+      "checksum": "8f3715b5074152eb8f6664caa685313a"
+    },
+    "www/styles/map.css": {
+      "checksum": "4c56ae4e8b54340100b91292afd7b838"
+    },
+    "www/styles/responsive.css": {
+      "checksum": "ddcabf19bffb7e8dd9fefd94a29fe07a"
+    },
+    "www/styles/tokens.css": {
+      "checksum": "4d8cb2df530937e8a609064597832af3"
     }
   }
 }

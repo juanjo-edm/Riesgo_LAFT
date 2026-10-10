@@ -27,6 +27,7 @@ dependencies = [
     "rsconnect-python>=1.31.1",
     "faicons>=0.2.2",
     "plotnine>=0.15.8",
+    "pyhere>=1.0.3",
 ]
 
 [tool.uv]

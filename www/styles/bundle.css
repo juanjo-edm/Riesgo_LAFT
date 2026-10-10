@@ -1,0 +1,11 @@
+/**
+ * Bundle CSS — Atlas Territorial de Riesgo LA/FT
+ * Consolidación modular de estilos de diseño
+ */
+
+@import url("tokens.css");
+@import url("base.css");
+@import url("layout.css");
+@import url("components.css");
+@import url("map.css");
+@import url("responsive.css");

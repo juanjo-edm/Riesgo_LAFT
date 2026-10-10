@@ -1,6 +1,7 @@
 """
 Aplicación Principal: Atlas Territorial de Problemáticas en Colombia y Riesgo LAFT.
 Framework: Shiny for Python (shiny).
+Diseño: Geospatial Intelligence UI/UX.
 """
 
 from pathlib import Path
@@ -21,7 +22,11 @@ from src.modules.map import map_server, map_ui
 from src.modules.profile import profile_server, profile_ui
 from src.modules.rankings import rankings_server, rankings_ui
 
-# Cargar datos una sola vez al inicio del proceso
+# Directorio de recursos estáticos www/
+WWW_DIR = Path(__file__).resolve().parent / "www"
+STYLES_DIR = WWW_DIR / "styles"
+
+# Cargar datos procesados y geometrías una sola vez en el ciclo de vida del proceso
 app_data = load_app_data()
 
 deptos_choices = ["Todos"] + sorted(app_data["municipios"]["dpto"].dropna().unique().tolist())
@@ -29,155 +34,151 @@ mpios_dict_init = {"": "Seleccione..."}
 for _, row in app_data["municipios"].sort_values("nom_mpio").iterrows():
     mpios_dict_init[str(row["cod_mpio"])] = f"{row['nom_mpio']} ({row['dpto']})"
 
+# SVG Icono de Marca (Brújula / Malla Geoespacial)
+ATLAS_LOGO_SVG = ui.HTML(
+    """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+    </svg>"""
+)
+
 app_ui = ui.page_sidebar(
+    # -------------------------------------------------------------------------
+    # Panel de Filtros Lateral (Sidebar)
+    # -------------------------------------------------------------------------
     ui.sidebar(
         filters_ui("filters", departamentos=deptos_choices, municipios_dict=mpios_dict_init),
-        width=340,
+        width=330,
         title=ui.span(
-            "Panel de Filtros",
-            style="font-weight: 800; color: #1e1b4b; letter-spacing: -0.2px;",
+            "Configuración y Filtros",
+            class_="sidebar-title",
         ),
-        bg="#f8fafc",
+        bg="#FFFFFF",
     ),
+
+    # -------------------------------------------------------------------------
+    # Cabecera HTML y Recursos CSS Modulares
+    # -------------------------------------------------------------------------
     ui.tags.head(
-        ui.tags.style(
-            """
-            :root {
-                --bs-primary: #1e1b4b;
-                --bs-primary-rgb: 30, 27, 75;
-            }
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-                background-color: #f8fafc;
-                color: #0f172a;
-            }
-            .atlas-header {
-                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
-                color: #ffffff;
-                padding: 22px 28px;
-                border-radius: 12px;
-                box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
-                margin-bottom: 20px;
-                border: 1px solid rgba(255, 255, 255, 0.08);
-            }
-            .atlas-header .header-badge {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                background: rgba(255, 255, 255, 0.15);
-                backdrop-filter: blur(8px);
-                color: #c7d2fe;
-                font-size: 0.75rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.6px;
-                padding: 4px 12px;
-                border-radius: 9999px;
-                margin-bottom: 10px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .atlas-header h2 {
-                margin: 0;
-                font-size: 1.6rem;
-                font-weight: 800;
-                letter-spacing: -0.025em;
-                color: #ffffff;
-            }
-            .atlas-header p {
-                margin: 6px 0 0 0;
-                font-size: 0.9rem;
-                color: #cbd5e1;
-                font-weight: 400;
-                line-height: 1.45;
-                max-width: 850px;
-            }
-            .nav-tabs {
-                border-bottom: 1px solid #e2e8f0;
-                gap: 4px;
-            }
-            .nav-tabs .nav-link {
-                color: #64748b;
-                font-size: 0.92rem;
-                font-weight: 600;
-                border: none;
-                border-bottom: 3px solid transparent;
-                padding: 10px 18px;
-                border-radius: 0;
-                transition: color 0.15s ease, border-color 0.15s ease;
-            }
-            .nav-tabs .nav-link:hover {
-                color: #1e1b4b;
-                border-bottom-color: #cbd5e1;
-            }
-            .nav-tabs .nav-link.active {
-                font-weight: 700;
-                color: #1e1b4b !important;
-                background: transparent !important;
-                border-bottom: 3px solid #4338ca !important;
-            }
-            .card {
-                border: 1px solid #e2e8f0 !important;
-                border-radius: 12px !important;
-                box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02) !important;
-                background-color: #ffffff;
-                transition: box-shadow 0.2s ease;
-            }
-            .card-header {
-                background-color: #ffffff !important;
-                border-bottom: 1px solid #f1f5f9 !important;
-                padding: 14px 18px !important;
-            }
-            .filter-section .form-label {
-                font-size: 0.8rem;
-                font-weight: 600;
-                color: #475569;
-                margin-bottom: 4px;
-            }
-            .filter-scrollbox {
-                max-height: 190px;
-                overflow-y: auto;
-                padding: 8px 10px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-            }
-            .filter-scrollbox::-webkit-scrollbar {
-                width: 6px;
-            }
-            .filter-scrollbox::-webkit-scrollbar-thumb {
-                background: #cbd5e1;
-                border-radius: 4px;
-            }
-            .bslib-value-box {
-                border-radius: 12px !important;
-                box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04) !important;
-                border: 1px solid #e2e8f0 !important;
-            }
-            """
-        )
+        ui.tags.meta(name="viewport", content="width=device-width, initial-scale=1.0"),
+        ui.tags.link(rel="preconnect", href="https://fonts.googleapis.com"),
+        ui.tags.link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin=""),
+        ui.tags.link(
+            rel="stylesheet",
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap",
+        ),
+        # Carga modular de estilos desde www/styles/
+        ui.tags.link(rel="stylesheet", href="styles/tokens.css"),
+        ui.tags.link(rel="stylesheet", href="styles/base.css"),
+        ui.tags.link(rel="stylesheet", href="styles/layout.css"),
+        ui.tags.link(rel="stylesheet", href="styles/components.css"),
+        ui.tags.link(rel="stylesheet", href="styles/map.css"),
+        ui.tags.link(rel="stylesheet", href="styles/responsive.css"),
     ),
+
+    # -------------------------------------------------------------------------
+    # A. Encabezado Compacto (Sección 5.A)
+    # -------------------------------------------------------------------------
     ui.tags.div(
-        ui.tags.div("Metodología Multicriterio Oficial • CRITIC v2.0", class_="header-badge"),
-        ui.tags.h2("Atlas Territorial de Problemáticas en Colombia"),
-        ui.tags.p("Consolidación analítica de fuentes públicas oficiales, tasas estandarizadas por 100.000 habitantes y ponderación objetiva de riesgo LAFT."),
-        class_="atlas-header",
+        ui.tags.div(
+            ui.tags.div(ATLAS_LOGO_SVG, class_="atlas-brand-logo"),
+            ui.tags.div(
+                ui.tags.h1("Atlas Territorial LA/FT", class_="atlas-brand-title"),
+                ui.tags.p("Inteligencia Geoespacial • Monitoreo Multidimensional de Riesgo en Colombia", class_="atlas-brand-subtitle"),
+                class_="atlas-brand-titles",
+            ),
+            class_="atlas-brand-group",
+        ),
+        ui.tags.div(
+            ui.tags.div(
+                ui.tags.span(class_="atlas-status-dot"),
+                ui.tags.span("CRITIC v2.0 • K-Means (k=4)"),
+                class_="atlas-status-badge",
+            ),
+            ui.input_action_button(
+                "btn_metodologia",
+                "Metodología Quarto",
+                class_="atlas-methodology-btn",
+            ),
+            class_="atlas-topbar-actions",
+        ),
+        class_="atlas-topbar",
     ),
+
+    # -------------------------------------------------------------------------
+    # B. Navegación Principal (Sección 5.B)
+    # -------------------------------------------------------------------------
     ui.navset_card_tab(
-        ui.nav_panel("Mapa Territorial", map_ui("map")),
-        ui.nav_panel("Rankings", rankings_ui("rankings")),
-        ui.nav_panel("Perfil Municipal", profile_ui("profile")),
-        ui.nav_panel("Perfil Departamental", department_profile_ui("department_profile")),
+        ui.nav_panel("🗺️ Mapa Territorial", map_ui("map")),
+        ui.nav_panel("📊 Rankings y Clasificación", rankings_ui("rankings")),
+        ui.nav_panel("🏛️ Perfil Municipal", profile_ui("profile")),
+        ui.nav_panel("🇨🇴 Perfil Departamental", department_profile_ui("department_profile")),
         id="main_tabs",
     ),
-    title="Atlas Territorial LAFT Colombia",
+    title=None,
+    window_title="Atlas Territorial LA/FT Colombia",
     theme=ui.Theme("zephyr"),
-    fillable=True,
+    fillable=False,
 )
 
 
 def server(input, output, session):
-    filtros = filters_server("filters", app_data)
+    filtros, map_focus, map_revision, select_from_map = filters_server("filters", app_data)
 
+    # -------------------------------------------------------------------------
+    # Modal de Fundamentación Metodológica Quarto
+    # -------------------------------------------------------------------------
+    @reactive.effect
+    @reactive.event(input.btn_metodologia)
+    def _show_methodology_modal():
+        m = ui.modal(
+            ui.tags.div(
+                ui.tags.div(
+                    ui.tags.p(
+                        "El Atlas consolida fuentes públicas oficiales para cuantificar y clasificar el riesgo territorial asociado "
+                        "al Lavado de Activos y Financiación del Terrorismo (LA/FT) en los 1.121 municipios y 33 departamentos de Colombia.",
+                        style="color: var(--atlas-text-secondary); font-size: 0.92rem; line-height: 1.5; margin-bottom: 14px;",
+                    ),
+                    ui.tags.div(
+                        ui.tags.div(
+                            ui.tags.strong("Marco Normativo e Institucional:", style="color: var(--atlas-blue-deep); display: block; margin-bottom: 4px; font-size: 0.86rem;"),
+                            ui.tags.p("Código Penal (Art. 323), Recomendaciones GAFI/FATF y estándares SARLAFT de la Superintendencia Financiera.", style="font-size: 0.82rem; margin: 0; color: var(--atlas-text-secondary);"),
+                            style="padding: 10px 14px; background: var(--atlas-surface-subtle); border-radius: var(--atlas-radius-sm); border-left: 3px solid var(--atlas-blue-interactive); margin-bottom: 10px;",
+                        ),
+                        ui.tags.div(
+                            ui.tags.strong("Pipeline Estadístico:", style="color: var(--atlas-blue-deep); display: block; margin-bottom: 4px; font-size: 0.86rem;"),
+                            ui.tags.ol(
+                                ui.tags.li("Tasas estandarizadas por 100.000 habitantes (Censo DANE 2018)."),
+                                ui.tags.li("Winsorización robusta (1%–99%) para control de valores extremos."),
+                                ui.tags.li("Ponderación objetiva CRITIC (desviación estándar / contraste y correlación intercriterio)."),
+                                ui.tags.li("Clasificación K-Means (k=4) ordenada en 4 niveles (Bajo, Medio, Alto, Muy alto)."),
+                                style="font-size: 0.82rem; margin: 0; padding-left: 18px; color: var(--atlas-text-secondary); line-height: 1.5;",
+                            ),
+                            style="padding: 10px 14px; background: var(--atlas-surface-subtle); border-radius: var(--atlas-radius-sm); border-left: 3px solid #10B981; margin-bottom: 14px;",
+                        ),
+                    ),
+                    ui.tags.div(
+                        ui.tags.a(
+                            "Abrir Documento Metodológico Quarto Completo (HTML) ↗",
+                            href="metodologia.html",
+                            target="_blank",
+                            class_="btn btn-primary w-100",
+                            style="font-weight: 600; font-size: 0.88rem; padding: 10px 16px; border-radius: var(--atlas-radius-sm);",
+                        ),
+                        style="margin-top: 10px;",
+                    ),
+                ),
+            ),
+            title="Fundamentación Metodológica y Analítica • CRITIC v2.0",
+            size="l",
+            easy_close=True,
+            footer=ui.modal_button("Cerrar"),
+        )
+        ui.modal_show(m)
+
+    # -------------------------------------------------------------------------
+    # Motor Reactivo de Cálculo (CRITIC v2.0 + K-Means)
+    # -------------------------------------------------------------------------
     @reactive.calc
     def active_scores():
         f = filtros()
@@ -243,9 +244,32 @@ def server(input, output, session):
             "municipios": municipios_active(),
             "departamentos": departamentos_active(),
             "vista": f["vista"],
+            "map_scope": (f["departamento"], tuple(f["niveles"])),
         }
 
-    # Inicializar servidores de módulos
+    @reactive.calc
+    def selected_territory():
+        focus = map_focus()
+        fd = filtered_data()
+        if not focus or focus["nivel"] != fd["vista"]:
+            return None
+        municipal = fd["vista"] == "Municipios"
+        df = fd["municipios" if municipal else "departamentos"]
+        code_col = "cod_mpio" if municipal else "cod_dpto"
+        match = df[df[code_col].astype(str) == focus["codigo"]]
+        return match.iloc[0].to_dict() if not match.empty else None
+
+    @reactive.effect
+    def _remove_excluded_focus():
+        focus = map_focus()
+        # El cambio automático de nivel se confirma en el cliente en el siguiente
+        # ciclo; no descartar durante esa transición la selección departamental.
+        if focus and focus["nivel"] == filtros()["vista"] and selected_territory() is None:
+            map_focus.set(None)
+
+    # -------------------------------------------------------------------------
+    # Inicialización de Servidores de Módulos
+    # -------------------------------------------------------------------------
     map_server(
         "map",
         filtered_data=filtered_data,
@@ -253,6 +277,9 @@ def server(input, output, session):
             "mapa_municipios": app_data["mapa_municipios"],
             "mapa_departamentos": app_data["mapa_departamentos"],
         },
+        selected_territory=selected_territory,
+        selection_revision=map_revision,
+        on_select_callback=select_from_map,
     )
 
     rankings_server(
@@ -274,8 +301,8 @@ def server(input, output, session):
         municipios_active_reactive=municipios_active,
     )
 
-app = App(app_ui, server)
+
+app = App(app_ui, server, static_assets=WWW_DIR)
 
 if __name__ == "__main__":
     app.run(port=8000)
-

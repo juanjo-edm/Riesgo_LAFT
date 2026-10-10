@@ -91,8 +91,9 @@ A continuación se presenta la ejecución secuencial del pipeline analítico. Ca
 Antes de procesar cualquier dato, se importan las herramientas necesarias (`numpy`, `pandas`, `scipy` y `sklearn`), se desactiva la notación científica para asegurar que los números decimales y conteos sean inmediatamente legibles, y se centralizan todas las rutas de archivos y parámetros del modelo (semillas aleatorias, cuantiles de recorte y configuración de clusters).
 
 ```{python}
-import sys
-from pathlib import Path
+from datetime import date
+import requests
+from pyhere import here
 import numpy as np
 import pandas as pd
 import plotnine as p9
@@ -109,18 +110,13 @@ pd.set_option("display.width", 1000)
 np.set_printoptions(suppress=True, precision=4)
 
 # -------------------------------------------------------------
-# Definición de rutas relativas de insumos y salidas
+# Definición de rutas de insumos y salidas con pyhere
 # -------------------------------------------------------------
 # Ubicación del archivo de datos dentro de la carpeta del cuaderno
-ruta_datos_insumo = Path("data") / "atlas_territorial_publico.xlsx"
-if not ruta_datos_insumo.exists():
-    ruta_datos_insumo = Path("notebook_methodology") / "data" / "atlas_territorial_publico.xlsx"
+ruta_datos_insumo = here("notebook_methodology", "data", "atlas_territorial_publico.xlsx")
 
 # Carpeta central de salida en la raíz donde la app Shiny lee la data
-carpeta_data_base = Path("..") / "Data" if (Path("..") / "Data").is_dir() else Path("..") / "data"
-if not carpeta_data_base.exists():
-    carpeta_data_base = Path("Data") if Path("Data").is_dir() else Path("data")
-ruta_salida_parquet = carpeta_data_base / "processed"
+ruta_salida_parquet = here("Data", "processed")
 ruta_salida_parquet.mkdir(parents=True, exist_ok=True)
 
 # -------------------------------------------------------------
@@ -164,6 +160,142 @@ columnas_metadatos = [
 print(f"Total dimensiones configuradas: {len(lista_dimensiones)}")
 print("Lista:", ", ".join(lista_dimensiones))
 ```
+
+## Extracción Automatizada desde la API de Datos Abiertos de Colombia (Socrata / SoQL)
+
+**Explicación intuitiva:**
+Para garantizar transparencia y reproducibilidad analítica, la captura de información territorial no depende de archivos CSV descargados manualmente ni de manipulación humana en hojas de cálculo. La plataforma oficial del Estado colombiano (**Portal de Datos Abiertos - `www.datos.gov.co`**), basada en la infraestructura tecnológica **Socrata Open Data API (SODA)**, permite la consulta programática y directa de registros administrativos mediante el lenguaje **SoQL (Socrata Query Language)**.
+
+SoQL implementa una sintaxis declarativa análoga a SQL estándar (`SELECT`, `WHERE`, `GROUP BY`, `ORDER BY`, `LIMIT` y `OFFSET`), lo que permite que el filtrado temporal, la exclusión de registros no territoriales y la agregación espacial por código DIVIPOLA se ejecuten directamente en los servidores del Estado antes de transferir los datos a memoria.
+
+### Inventario de Datasets Oficiales Consultados (Socrata - SoQL)
+
+La siguiente matriz documenta la procedencia institucional, identificadores de endpoints (`resource_id`), variables analíticas y filtros aplicados para las dimensiones principales del Atlas Territorial:
+
+| Dimensión | Indicador / Fenómeno | Entidad Custodia | Endpoint Socrata (`resource_id`) | Variables Consultadas | Filtros SoQL Principales |
+|:---|:---|:---|:---|:---|:---|
+| **EXTC** | Extorsión | Policía Nacional (DIJIN) | `q2ib-t9am.json` | `departamento`, `municipio`, `cod_muni`, `fecha_hecho`, `cantidad` | `departamento IS NOT NULL` |
+| **EXTC** | Secuestro | Policía Nacional (DIJIN) | `d7zw-hpf4.json` | `departamento`, `municipio`, `cod_muni`, `fecha_hecho`, `cantidad` | `cod_muni IS NOT NULL` |
+| **NARC** | Incautación de Cocaína | Ministerio de Defensa | `26zg-9p9r.json` | `departamento`, `municipio`, `cod_muni`, `cantidad`, `fecha_hecho` | `departamento != 'EXTERIOR' AND cod_muni IS NOT NULL` |
+| **NARC** | Incautación de Marihuana | Ministerio de Defensa | `g228-vp9d.json` | `departamento`, `municipio`, `cod_muni`, `cantidad`, `fecha_hecho` | `cod_muni IS NOT NULL` |
+| **NARC** | Insumos Líquidos y Sólidos | Ministerio de Defensa | `k2wp-tdv7.json` / `n997-hhiv.json` | `departamento`, `municipio`, `cod_muni`, `cantidad` | `cod_muni IS NOT NULL` |
+| **MIEX** | Maquinaria Explotación Ilícita | Ministerio de Defensa | `dxs6-mdeg.json` | `departamento`, `municipio`, `cod_muni`, `cantidad` | `cod_muni IS NOT NULL` |
+| **MIEX** | Capturas por Minería Ilegal | Policía Nacional | `3wcs-8xp9.json` | `departamento`, `municipio`, `cod_muni`, `cantidad` | `cod_muni IS NOT NULL` |
+| **CONT** | Piratería Terrestre | Policía Nacional | `sutf-7dyz.json` | `departamento`, `municipio`, `cod_muni`, `cantidad` | `cod_muni IS NOT NULL` |
+| **DANE** | Codificación Municipal DIVIPOLA | DANE | `gdxc-w37w.json` | `cod_dpto`, `dpto`, `cod_mpio`, `nom_mpio`, `latitud`, `longitud` | Catálogo municipal nacional |
+
+### Consulta SoQL Directa con Agregación Espacial (Extorsión - Policía Nacional)
+
+A continuación se realiza una consulta directa a la API de Socrata extrayendo y consolidando los registros de extorsión a nivel municipal mediante agregación `GROUP BY`. Con `LIMIT 2000` se cubre el 100% del universo de 1.122 municipios de Colombia en una sola llamada sin exclusión de información:
+
+```{python}
+# -------------------------------------------------------------
+# 1. Extracción de Extorsión (Policía Nacional) mediante SoQL
+# -------------------------------------------------------------
+url_extorsion = "https://www.datos.gov.co/resource/q2ib-t9am.json"
+
+# Consulta declarativa en sintaxis SoQL (LIMIT 2000 cubre todos los municipios)
+consulta_extorsion = """
+SELECT departamento, municipio, cod_muni, count(*) AS total_hechos
+WHERE departamento IS NOT NULL AND cod_muni IS NOT NULL
+GROUP BY departamento, municipio, cod_muni
+ORDER BY total_hechos DESC
+LIMIT 2000
+"""
+
+# Extracción mediante requests con parámetros de consulta SoQL
+respuesta_ext = requests.get(
+    url_extorsion,
+    params={"$query": consulta_extorsion},
+    timeout=60
+)
+respuesta_ext.raise_for_status()
+
+# Conversión a DataFrame, estandarización DIVIPOLA (5 dígitos) y tipado
+df_extorsion_api = pd.DataFrame(respuesta_ext.json())
+df_extorsion_api["cod_muni"] = df_extorsion_api["cod_muni"].astype(str).str.split(".").str[0].str.zfill(5)
+df_extorsion_api["total_hechos"] = pd.to_numeric(df_extorsion_api["total_hechos"], errors="coerce").fillna(0)
+
+print(f"[API Socrata] Extorsión extraída el {date.today().isoformat()}: {len(df_extorsion_api):,} municipios obtenidos (cobertura total sin exclusión).")
+df_extorsion_api.head(5)
+```
+
+### Consulta SoQL con Agregación de Volúmenes (Incautación de Cocaína - MinDefensa)
+
+Para variables volumétricas continuas (e.g. kilogramos de sustancias ilícitas incautadas), SoQL permite calcular sumas directamente en el servidor ministerial antes de transferir los datos, utilizando `LIMIT 2000` para capturar la totalidad de los municipios reportantes:
+
+```{python}
+# -------------------------------------------------------------
+# 2. Extracción de Narcotráfico: Incautaciones de Cocaína
+# -------------------------------------------------------------
+url_cocaina = "https://www.datos.gov.co/resource/26zg-9p9r.json"
+
+# Consulta SoQL agregando volúmenes (kg) por municipio sin truncamiento
+consulta_cocaina = """
+SELECT departamento, municipio, cod_muni, sum(cantidad) AS total_incautado_kg
+WHERE departamento != 'EXTERIOR' AND cod_muni IS NOT NULL
+GROUP BY departamento, municipio, cod_muni
+ORDER BY total_incautado_kg DESC
+LIMIT 2000
+"""
+
+respuesta_coca = requests.get(
+    url_cocaina,
+    params={"$query": consulta_cocaina},
+    timeout=60
+)
+respuesta_coca.raise_for_status()
+
+# Conversión a DataFrame, estandarización DIVIPOLA y tipado numérico
+df_cocaina_api = pd.DataFrame(respuesta_coca.json())
+df_cocaina_api["cod_muni"] = df_cocaina_api["cod_muni"].astype(str).str.split(".").str[0].str.zfill(5)
+df_cocaina_api["total_incautado_kg"] = pd.to_numeric(df_cocaina_api["total_incautado_kg"], errors="coerce").fillna(0.0)
+
+print(f"[API Socrata] Cocaína extraída el {date.today().isoformat()}: {len(df_cocaina_api):,} municipios obtenidos (cobertura total sin exclusión).")
+df_cocaina_api.head(5)
+```
+
+### Extracción Directa de Delitos de Alto Impacto (Secuestro - Policía Nacional)
+
+De forma análoga, se consultan los registros consolidados de secuestro a nivel municipal mediante una extracción lineal y limpia con `LIMIT 2000`, asegurando que ningún municipio quede por fuera:
+
+```{python}
+# -------------------------------------------------------------
+# 3. Extracción de Secuestro (Policía Nacional) mediante SoQL
+# -------------------------------------------------------------
+url_secuestro = "https://www.datos.gov.co/resource/d7zw-hpf4.json"
+
+# Consulta SoQL con cobertura nacional completa en una sola llamada
+consulta_secuestro = """
+SELECT departamento, municipio, cod_muni, count(*) AS total_secuestros
+WHERE cod_muni IS NOT NULL
+GROUP BY departamento, municipio, cod_muni
+ORDER BY total_secuestros DESC
+LIMIT 2000
+"""
+
+respuesta_sec = requests.get(
+    url_secuestro,
+    params={"$query": consulta_secuestro},
+    timeout=60
+)
+respuesta_sec.raise_for_status()
+
+# Conversión a DataFrame, estandarización DIVIPOLA y tipado numérico
+df_secuestro_api = pd.DataFrame(respuesta_sec.json())
+df_secuestro_api["cod_muni"] = df_secuestro_api["cod_muni"].astype(str).str.split(".").str[0].str.zfill(5)
+df_secuestro_api["total_secuestros"] = pd.to_numeric(df_secuestro_api["total_secuestros"], errors="coerce").fillna(0)
+
+print(f"[API Socrata] Secuestro extraído el {date.today().isoformat()}: {len(df_secuestro_api):,} municipios obtenidos (cobertura total sin exclusión).")
+df_secuestro_api.head(5)
+```
+
+::: {.callout-note}
+### Tratamiento Metodológico: Imputación de Ceros y Estandarización de Tasas
+1. **Ausencia de Eventos vs. Datos Faltantes (*Missing Values*):** En registros delictivos policiales, si un municipio registra cero incidentes (e.g. no hubo extorsiones ni secuestros), el servidor no retorna una fila para ese municipio en el `GROUP BY`. Al cruzar con el marco geográfico nacional de 1.122 municipios del DANE (`TOTAL_TERRITORIAL`), se realiza un *left join* imputando cero (`fillna(0)`). En criminología cuantitativa y SARLAFT, este cero refleja ausencia empírica de hechos observados, no un dato faltante.
+2. **Paginación en Tablas Transaccionales:** Para consultas agrupadas por municipio, un límite como `LIMIT 2000` garantiza la totalidad territorial en una sola petición HTTP. En caso de consultar tablas de eventos individuales fila por fila (donde existen cientos de miles de registros históricos), SoQL soporta el parámetro `OFFSET` para navegar sucesivamente páginas de resultados.
+3. **Control por Tamaño Poblacional:** Los conteos absolutos (`count(*)`) presentan un sesgo inevitable hacia metrópolis densamente pobladas (Bogotá, Medellín, Cali). Para neutralizar este efecto, la matriz de indicadores estandariza los totales transformándolos en **tasas por 100.000 habitantes** según el Censo Nacional del DANE antes de proceder con el cálculo del índice CRITIC.
+:::
 
 ## Carga y Jerarquización del Catálogo de Indicadores
 
@@ -680,24 +812,24 @@ Todos los conjuntos de datos generados y validados por el cuaderno se exportan e
 
 ```{python}
 # 1. Catálogo de indicadores y fuentes
-df_catalogo.to_parquet(ruta_salida_parquet / "catalogo_indicadores.parquet", index=False)
+df_catalogo.to_parquet(here("Data", "processed", "catalogo_indicadores.parquet"), index=False)
 
 # 2. Base de datos municipal consolidada con scores y clusters
-df_municipios_final.to_parquet(ruta_salida_parquet / "municipios_total.parquet", index=False)
+df_municipios_final.to_parquet(here("Data", "processed", "municipios_total.parquet"), index=False)
 
 # 3. Base de datos departamental agregada
-df_deptos_final.to_parquet(ruta_salida_parquet / "departamentos_total.parquet", index=False)
+df_deptos_final.to_parquet(here("Data", "processed", "departamentos_total.parquet"), index=False)
 
 # 4. Detalle de indicadores por municipio
-df_indicadores_proc.to_parquet(ruta_salida_parquet / "indicadores_municipales.parquet", index=False)
+df_indicadores_proc.to_parquet(here("Data", "processed", "indicadores_municipales.parquet"), index=False)
 
 # 5. Tabla de ponderadores objetivos CRITIC
-df_pesos.to_parquet(ruta_salida_parquet / "pesos_objetivos.parquet", index=False)
+df_pesos.to_parquet(here("Data", "processed", "pesos_objetivos.parquet"), index=False)
 
 # 6. Matriz larga de dimensiones
-df_dimensiones_proc.to_parquet(ruta_salida_parquet / "dimensiones_municipales.parquet", index=False)
+df_dimensiones_proc.to_parquet(here("Data", "processed", "dimensiones_municipales.parquet"), index=False)
 
-print(f"Exportación exitosa en formato Parquet a: {ruta_salida_parquet.resolve()}")
+print(f"Exportación exitosa en formato Parquet a: {here('Data', 'processed').resolve()}")
 ```
 
 ## Pruebas de Consistencia y Auditoría de Integridad Metodológica

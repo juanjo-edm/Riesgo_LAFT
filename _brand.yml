@@ -1,0 +1,36 @@
+meta:
+  name: "Atlas Territorial LAFT"
+  link: https://github.com/juanjo-edm/Riesgo_LAFT
+
+color:
+  palette:
+    deep-blue: "#14243A"
+    interactive-blue: "#315EEA"
+    bg-main: "#F5F7FB"
+    surface: "#FFFFFF"
+    text-main: "#17253B"
+    text-muted: "#64748B"
+    border-subtle: "#E2E8F0"
+    risk-bajo: "#8BC34A"
+    risk-medio: "#F2C94C"
+    risk-alto: "#F2994A"
+    risk-muy-alto: "#D7191C"
+  foreground: text-main
+  background: bg-main
+  primary: interactive-blue
+  secondary: text-muted
+  info: interactive-blue
+  success: risk-bajo
+  warning: risk-medio
+  danger: risk-muy-alto
+
+typography:
+  fonts:
+    - family: Inter
+      source: google
+      weight: [400, 500, 600, 700, 800]
+    - family: "Plus Jakarta Sans"
+      source: google
+      weight: [600, 700, 800]
+  base: Inter
+  headings: "Plus Jakarta Sans"

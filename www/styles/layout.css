@@ -1,0 +1,212 @@
+/**
+ * Layout & Navigation Styles — Atlas Territorial LA/FT
+ * Compact header, fluid canvas, and modern tabs
+ */
+
+/* Compact Header */
+.atlas-topbar {
+  background: var(--atlas-surface);
+  border-bottom: 1px solid var(--atlas-border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--atlas-shadow-xs);
+}
+
+.atlas-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.atlas-brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--atlas-radius-md);
+  background: linear-gradient(135deg, var(--atlas-blue-deep) 0%, var(--atlas-blue-interactive) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(49, 94, 234, 0.25);
+  flex-shrink: 0;
+}
+
+.atlas-brand-logo svg {
+  width: 20px;
+  height: 20px;
+}
+
+.atlas-brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.atlas-brand-title {
+  font-family: var(--atlas-font-display);
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--atlas-blue-deep);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.atlas-brand-subtitle {
+  font-size: 0.78rem;
+  color: var(--atlas-text-secondary);
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.atlas-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.atlas-methodology-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 13px;
+  border-radius: var(--atlas-radius-sm);
+  background: var(--atlas-surface-subtle);
+  border: 1px solid var(--atlas-border);
+  color: var(--atlas-blue-deep);
+  transition: all var(--atlas-transition-fast);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.atlas-methodology-btn:hover {
+  background: var(--atlas-surface-hover);
+  border-color: var(--atlas-border-strong);
+  color: var(--atlas-blue-interactive);
+  text-decoration: none;
+}
+
+.atlas-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--atlas-radius-full);
+  background: var(--atlas-blue-subtle);
+  color: var(--atlas-blue-interactive);
+  border: 1px solid rgba(49, 94, 234, 0.2);
+  letter-spacing: 0.2px;
+}
+
+.atlas-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--atlas-blue-interactive);
+  box-shadow: 0 0 0 2px rgba(49, 94, 234, 0.2);
+}
+
+/* Page Layout & Container */
+.bslib-page-sidebar {
+  background-color: var(--atlas-bg-main) !important;
+  padding: 0 !important;
+}
+
+.bslib-sidebar-layout {
+  padding: 16px 20px 24px 20px;
+  gap: 18px;
+}
+
+/* Sidebar Custom Styling */
+.bslib-sidebar-layout > .sidebar {
+  background: var(--atlas-surface) !important;
+  border: 1px solid var(--atlas-border) !important;
+  border-radius: var(--atlas-radius-lg) !important;
+  box-shadow: var(--atlas-shadow-sm) !important;
+  padding: 16px 18px !important;
+  overflow-y: auto;
+}
+
+.sidebar-title {
+  font-family: var(--atlas-font-display);
+  font-size: 0.96rem !important;
+  font-weight: 700 !important;
+  color: var(--atlas-blue-deep) !important;
+  letter-spacing: -0.01em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--atlas-border-subtle);
+  margin-bottom: 14px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Modern Tab Navigation */
+.nav-tabs {
+  border-bottom: 1px solid var(--atlas-border) !important;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+
+.nav-tabs .nav-link {
+  font-family: var(--atlas-font-sans);
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: var(--atlas-text-secondary) !important;
+  border: none !important;
+  border-radius: var(--atlas-radius-md) var(--atlas-radius-md) 0 0 !important;
+  padding: 9px 18px !important;
+  background: transparent !important;
+  border-bottom: 3px solid transparent !important;
+  transition: all var(--atlas-transition-fast) !important;
+  cursor: pointer;
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--atlas-blue-deep) !important;
+  background: var(--atlas-surface-subtle) !important;
+  border-bottom-color: var(--atlas-border-strong) !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--atlas-blue-interactive) !important;
+  font-weight: 700 !important;
+  background: var(--atlas-surface) !important;
+  border-bottom: 3px solid var(--atlas-blue-interactive) !important;
+}
+
+/* Card Modern Defaults */
+.card {
+  background: var(--atlas-surface) !important;
+  border: 1px solid var(--atlas-border) !important;
+  border-radius: var(--atlas-radius-lg) !important;
+  box-shadow: var(--atlas-shadow-xs) !important;
+  transition: box-shadow var(--atlas-transition-fast);
+}
+
+.card:hover {
+  box-shadow: var(--atlas-shadow-sm) !important;
+}
+
+.card-header {
+  background: var(--atlas-surface) !important;
+  border-bottom: 1px solid var(--atlas-border-subtle) !important;
+  padding: 12px 18px !important;
+  border-radius: var(--atlas-radius-lg) var(--atlas-radius-lg) 0 0 !important;
+}
+
+.card-body {
+  padding: 16px 18px !important;
+}
